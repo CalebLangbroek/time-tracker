@@ -1,0 +1,39 @@
+$bp-phone: 576px;
+$bp-tablet: 768px;
+$bp-laptop: 992px;
+$bp-desktop: 1200px;
+
+.app-container {
+	display: flex;
+	height: 100vh;
+	width: 100%;
+
+	.app-nav {
+		width: 25%;
+		max-width: 275px;
+	}
+	
+	.app-content {
+		flex: 1;
+	}
+}
+
+@media (max-width: $bp-phone) { 
+
+}
+
+@media (min-width: $bp-phone) { 
+	
+}
+
+@media (min-width: $bp-tablet) {
+	
+}
+
+@media (min-width: $bp-laptop) {
+
+}
+
+@media (min-width: $bp-desktop) {
+	
+}

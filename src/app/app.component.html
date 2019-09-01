@@ -1,0 +1,8 @@
+<div class="app-container">
+	<div class="app-nav" [ngStyle]="{display: showSideNav ? '' : 'none'}">
+		<app-nav></app-nav>
+	</div>
+	<div (swiperight)="onSwipeRight()" (swipeleft)="onSwipeLeft()" class="app-content">
+		<router-outlet></router-outlet>
+	</div>
+</div>

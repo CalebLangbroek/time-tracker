@@ -1,0 +1,19 @@
+<div class="tracker-container">
+	<mat-card class="tracker-card">
+		<div class="tracker-button">
+			<mat-icon class="md-green md-48" *ngIf="!started" (click)="onStart()">play_circle_fill</mat-icon>
+			<mat-icon class="md-red md-48" *ngIf="started" (click)="onStop()">stop</mat-icon>
+		</div>
+		<div class="tracker-name">
+			<form>
+				<mat-form-field class="tracker-name-input">
+					<input matInput>
+				</mat-form-field>
+			</form>
+		</div>
+		<div class="tracker-time">
+			{{ tracker.getTimerTime() }}
+		</div>
+	</mat-card>	
+</div>
+
