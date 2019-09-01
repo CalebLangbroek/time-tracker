@@ -5,15 +5,12 @@
 			<mat-icon class="md-red md-48" *ngIf="started" (click)="onStop()">stop</mat-icon>
 		</div>
 		<div class="tracker-name">
-			<form>
-				<mat-form-field class="tracker-name-input">
-					<input matInput>
-				</mat-form-field>
-			</form>
+			<mat-form-field class="tracker-name-input">
+				<input type="text" [(ngModel)]="trackerName" matInput>
+			</mat-form-field>
 		</div>
 		<div class="tracker-time">
-			{{ tracker.getTimerTime() }}
+			{{ tracker.getTimerDuration() | duration }}
 		</div>
-	</mat-card>	
+	</mat-card>
 </div>
-

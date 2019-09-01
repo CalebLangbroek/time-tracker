@@ -9,6 +9,7 @@ import { TrackerService } from 'src/app/services/tracker.service';
 })
 export class TrackerComponent implements OnInit {
 	started: boolean;
+	trackerName = '';
 	
 	constructor(public tracker: TrackerService) { }
 
@@ -29,6 +30,9 @@ export class TrackerComponent implements OnInit {
 		this.started = false;
 
 		// Stop the tracker
-		this.tracker.stopTracker();	
+		this.tracker.stopTracker(this.trackerName);
+		
+		// Reset the input field
+		this.trackerName = '';
 	}
 }

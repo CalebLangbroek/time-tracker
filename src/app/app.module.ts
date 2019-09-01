@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -12,7 +13,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavComponent } from './components/nav/nav.component';
 import { HomeComponent } from './components/home/home.component';
-import { TrackerComponent } from './components/tracker/tracker.component'
+import { TrackerComponent } from './components/tracker/tracker.component';
+import { HistoryComponent } from './components/history/history.component';
+import { DurationPipe } from './pipes/duration.pipe';
 
 @NgModule({
 	declarations: [
@@ -20,6 +23,8 @@ import { TrackerComponent } from './components/tracker/tracker.component'
 		NavComponent,
 		HomeComponent,
 		TrackerComponent,
+		HistoryComponent,
+		DurationPipe,
 	],
 	imports: [
 		BrowserModule,
@@ -28,7 +33,8 @@ import { TrackerComponent } from './components/tracker/tracker.component'
 		MatIconModule,
 		MatCardModule,
 		MatDividerModule,
-		MatInputModule
+		MatInputModule,
+		FormsModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]

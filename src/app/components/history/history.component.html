@@ -1,0 +1,6 @@
+<div class="history-container">
+	<mat-card class="history-entry" *ngFor="let timeEntry of tracker.trackerEntries">
+		{{ timeEntry.name }} {{ timeEntry.duration | duration }}
+	</mat-card>
+</div>
+

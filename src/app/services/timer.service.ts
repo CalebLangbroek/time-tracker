@@ -5,10 +5,10 @@ import { Injectable } from '@angular/core';
 })
 export class TimerService {
 	intervalId: any;
-	time: number;
+	duration: number;
 
 	constructor() {
-		this.time = 0;
+		this.duration = 0;
 	}
 
 	public startTimer(): void {
@@ -20,28 +20,15 @@ export class TimerService {
 		this.clearTimer();
 	}
 
-	public getTime(): string {
-		// Get the minutes and seconds that have passed
-		let minutes = (this.time / 60).toFixed(0);
-		let seconds = (this.time % 60).toFixed(0);
-
-		// Pad the times with a 0 if less than 10
-		if (parseInt(minutes) < 10) {
-			minutes = `0${minutes}`;
-		}
-		if (parseInt(seconds) < 10) {
-			seconds = `0${seconds}`;
-		}
-
-		// Return the time
-		return `${minutes}:${seconds}`;
+	public getDuration(): number {
+		return this.duration;
 	}
 
 	private clearTimer(): void {
-		this.time = 0;
+		this.duration = 0;
 	}
 
 	private updateTimer(): void {
-		this.time++;
+		this.duration++;
 	}
 }
