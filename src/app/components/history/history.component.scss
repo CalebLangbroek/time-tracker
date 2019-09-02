@@ -2,6 +2,27 @@
 	padding: 10px;
 
 	.history-entry {
-		margin: 10px;
+		margin-bottom: 10px;
+		
+		.history-main{
+			display: flex;
+			align-items: center;
+		}
+
+		.history-entry-name {
+			flex: 1;
+		}
+
+		.history-entry-duration {
+			color: #007bff;
+		}
+		
+		.history-entry-input, .history-entry-duration, .history-entry-delete {
+			padding: 0 10px;
+		}
+
+		.history-edit{
+			margin: 10px;
+		}
 	}
 }

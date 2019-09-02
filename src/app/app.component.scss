@@ -8,13 +8,27 @@ $bp-desktop: 1200px;
 	height: 100vh;
 	width: 100%;
 
+	.app-nav-toggle{
+		margin: 10px;
+	}
+
 	.app-nav {
 		width: 25%;
 		max-width: 275px;
+		background: rgba(32, 32, 32)
 	}
 	
+	.app-nav-mobile {
+		position: absolute;
+		z-index: 2;
+		top: 0;
+		bottom: 0;
+	}
+
 	.app-content {
 		flex: 1;
+		height: 100%;
+		width: 100%;
 	}
 }
 

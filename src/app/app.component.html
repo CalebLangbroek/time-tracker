@@ -1,8 +1,11 @@
 <div class="app-container">
-	<div class="app-nav" [ngStyle]="{display: showSideNav ? '' : 'none'}">
+	<div class="app-nav" [ngStyle]="{display: showSideNav ? '' : 'none'}" [ngClass]="{'app-nav-mobile': isMobile}">
 		<app-nav></app-nav>
 	</div>
 	<div (swiperight)="onSwipeRight()" (swipeleft)="onSwipeLeft()" class="app-content">
+		<button mat-raised-button class="app-nav-toggle" *ngIf="isMobile" (click)="onClickNavToggle()">
+			<mat-icon>menu</mat-icon>
+		</button>
 		<router-outlet></router-outlet>
 	</div>
 </div>

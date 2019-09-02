@@ -6,6 +6,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import 'hammerjs';
 
@@ -34,7 +39,12 @@ import { DurationPipe } from './pipes/duration.pipe';
 		MatCardModule,
 		MatDividerModule,
 		MatInputModule,
-		FormsModule
+		FormsModule,
+		MatButtonModule,
+		MatExpansionModule,
+		MatDatepickerModule,
+		MatNativeDateModule,
+		MatTooltipModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]

@@ -1,34 +1,32 @@
 import { Injectable } from '@angular/core';
 
+import { interval, Subscription } from 'rxjs';
+
 @Injectable({
 	providedIn: 'root'
 })
 export class TimerService {
-	intervalId: any;
-	duration: number;
+	private intervalSub: Subscription;
+	private duration: number;
 
 	constructor() {
 		this.duration = 0;
 	}
 
-	public startTimer(): void {
-		this.intervalId = setInterval(this.updateTimer.bind(this), 1000);
+	startTimer(): void {
+		this.intervalSub = interval(1000).subscribe(() => this.duration++);
 	}
 
-	public stopTimer(): void {
-		clearInterval(this.intervalId);
+	stopTimer(): void {
+		this.intervalSub.unsubscribe();
 		this.clearTimer();
 	}
 
-	public getDuration(): number {
+	getDuration(): number {
 		return this.duration;
 	}
 
 	private clearTimer(): void {
 		this.duration = 0;
-	}
-
-	private updateTimer(): void {
-		this.duration++;
 	}
 }

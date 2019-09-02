@@ -9,18 +9,19 @@ import { TrackerService } from 'src/app/services/tracker.service';
 })
 export class TrackerComponent implements OnInit {
 	started: boolean;
-	trackerName = '';
-	
+	trackerName: string;
+
 	constructor(public tracker: TrackerService) { }
 
 	ngOnInit() {
 		this.started = false;
+		this.trackerName = '';
 	}
 
 	onStart() {
 		// Update the component status
 		this.started = true;
-		
+
 		// Start the tracker
 		this.tracker.startTracker();
 	}
@@ -31,7 +32,7 @@ export class TrackerComponent implements OnInit {
 
 		// Stop the tracker
 		this.tracker.stopTracker(this.trackerName);
-		
+
 		// Reset the input field
 		this.trackerName = '';
 	}
