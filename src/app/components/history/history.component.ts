@@ -28,23 +28,23 @@ export class HistoryComponent implements OnInit, OnDestroy {
 		this.tracker.deleteTrackerEntry(index);
 	}
 
-	onClickTime(index: number) {
-		this.trackerEntries[index].opened = !this.trackerEntries[index].opened;
+	onClickEdit(index: number) {
+		this.trackerEntries[index].isOpen = !this.trackerEntries[index].isOpen;
 	}
 
-	onChangeStartTime(index: number, time: string) {
+	onChangeTime(index: number, time: string, prop: string) {
+		if (!time) {
+			return;
+		}
 
+		this.tracker.setTrackerEntryTime(index, time, prop);
 	}
 
-	onChangeStartDate(index: number, time: string) {
+	onChangeDate(index: number, date: string, prop: string) {
+		if (!date) {
+			return;
+		}
 
-	}
-
-	onChangeEndTime(index: number, time: string) {
-
-	}
-
-	onChangeEndDate(index: number, time: string) {
-
+		this.tracker.setTrackerEntryDate(index, date, prop);
 	}
  }

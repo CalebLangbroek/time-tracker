@@ -1,9 +1,17 @@
+$cardbg: rgb(255, 255, 255);
+$blue: rgb(87, 168, 255);
+$padding: 10px;
+
 .history-container {
-	padding: 10px;
+	padding: $padding;
 
 	.history-entry {
 		margin-bottom: 10px;
 		
+		&:hover, &:active {
+			background-color: darken($cardbg, 5%);
+		}
+
 		.history-main{
 			display: flex;
 			align-items: center;
@@ -13,16 +21,12 @@
 			flex: 1;
 		}
 
-		.history-entry-duration {
-			color: #007bff;
-		}
-		
 		.history-entry-input, .history-entry-duration, .history-entry-delete {
-			padding: 0 10px;
+			padding: 0 $padding;
 		}
 
 		.history-edit{
-			margin: 10px;
+			background: darken($cardbg, 10%);
 		}
 	}
 }

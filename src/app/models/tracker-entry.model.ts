@@ -3,5 +3,5 @@ export interface TrackerEntry {
 	duration: number;
 	start: Date;
 	end?: Date;
-	opened?: boolean;
+	isOpen?: boolean;
 }

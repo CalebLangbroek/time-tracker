@@ -12,18 +12,16 @@ export class TrackerService {
 
 	constructor(private timer: TimerService) {
 		// TODO: Remove test data
-		this.trackerEntries = [
-			{
-				name: 'Test one',
-				duration: 20,
+		this.trackerEntries = [];
+
+		for (let i = 0; i < 5; i++) {
+			this.trackerEntries.push({
+				name: 'Test ' + i.toString(),
+				duration: 0,
 				start: new Date(),
-			},
-			{
-				name: 'Test two',
-				duration: 10,
-				start: new Date()
-			}
-		];
+				end: new Date()
+			});
+		}
 	}
 
 	getTrackerEntries() {
@@ -42,7 +40,7 @@ export class TrackerService {
 			name, duration: this.timer.getDuration(),
 			start: this.startDate,
 			end: new Date(),
-			opened: false
+			isOpen: false
 		});
 
 		// Sort the entries in reverse chronological order
@@ -65,13 +63,65 @@ export class TrackerService {
 		this.trackerEntries[index].name = name;
 	}
 
-	setTrackerEntryStartTime(index: number, time: string) {
-		// this.trackerEntries[index].start.setMinutes(time);
-		// this.trackerEntries[index].start.setHours(time);
+	/**
+	 * Set a new time for a tracker entry.
+	 * @param index Index of the tracker entry in the array.
+	 * @param time New time in form 'HH:mm'.
+	 */
+	setTrackerEntryTime(index: number, time: string, prop: string) {
+		// Check that we are updating start or end
+		if (prop !== 'start' && prop !== 'end') {
+			return;
+		}
+
+		// Get the hours and minutes from the time
+		const timeSplit = time.split(':');
+		const hours = parseInt(timeSplit[0], 10);
+		const minutes = parseInt(timeSplit[1], 10);
+
+		// Set the hours and minutes
+		this.trackerEntries[index][prop].setHours(hours);
+		this.trackerEntries[index][prop].setMinutes(minutes);
+
+		// Update the tracker's duration
+		this.calculateTrackerEntryDuration(index);
+
+		// Sort the entries in reverse chronological order
+		this.trackerEntries.sort(this.compareTrackerEntries);
 	}
 
-	setTrackerEntryStartDate(index: number, date: string) {
+	setTrackerEntryDate(index: number, fullDate: string, prop: string) {
+		// Check that we are updating start or end
+		if (prop !== 'start' && prop !== 'end') {
+			return;
+		}
 
+		// Get the date, month, and year from the full date
+		const fullDateSplit = fullDate.split('/');
+		const date = parseInt(fullDateSplit[1], 10);
+		const month = parseInt(fullDateSplit[0], 10) - 1;
+		const year = parseInt(fullDateSplit[2], 10);
+
+		// Set the date, month, and year
+		this.trackerEntries[index][prop].setDate(date);
+		this.trackerEntries[index][prop].setMonth(month);
+		this.trackerEntries[index][prop].setFullYear(year);
+
+		// Update the tracker's duration
+		this.calculateTrackerEntryDuration(index);
+
+		// Sort the entries in reverse chronological order
+		this.trackerEntries.sort(this.compareTrackerEntries);
+	}
+
+	/**
+	 * Calculate the duration of a tracker entry.
+	 * @param index Index of the tracker entry in the array.
+	 */
+	calculateTrackerEntryDuration(index: number) {
+		const trackerEntry = this.trackerEntries[index];
+		const duration = (trackerEntry.end.getTime() - trackerEntry.start.getTime()) / 1000;
+		this.trackerEntries[index].duration = duration;
 	}
 
 	/**
@@ -81,9 +131,6 @@ export class TrackerService {
 	 */
 	deleteTrackerEntry(index: number) {
 		this.trackerEntries.splice(index, 1);
-
-		// Sort the entries in reverse chronological order
-		this.trackerEntries.sort(this.compareTrackerEntries);
 	}
 
 	/**

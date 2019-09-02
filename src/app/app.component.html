@@ -3,9 +3,9 @@
 		<app-nav></app-nav>
 	</div>
 	<div (swiperight)="onSwipeRight()" (swipeleft)="onSwipeLeft()" class="app-content">
-		<button mat-raised-button class="app-nav-toggle" *ngIf="isMobile" (click)="onClickNavToggle()">
+		<!-- <button mat-raised-button class="app-nav-toggle" *ngIf="isMobile" (click)="onClickNavToggle()">
 			<mat-icon>menu</mat-icon>
-		</button>
+		</button> -->
 		<router-outlet></router-outlet>
 	</div>
 </div>
