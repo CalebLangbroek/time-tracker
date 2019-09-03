@@ -35,19 +35,17 @@ export class TrackerService {
 	}
 
 	stopTracker(name: string) {
-		// Save the entry into the service
-		this.trackerEntries.push({
-			name, duration: this.timer.getDuration(),
+		// Stop the timer and get its duration
+		const duration = this.timer.stopTimer();
+
+		// Save the entry to the beginning of the array
+		this.trackerEntries.unshift({
+			name,
+			duration,
 			start: this.startDate,
 			end: new Date(),
 			isOpen: false
 		});
-
-		// Sort the entries in reverse chronological order
-		this.trackerEntries.sort(this.compareTrackerEntries);
-
-		// Stop the timer
-		this.timer.stopTimer();
 	}
 
 	getTimerDuration(): number {

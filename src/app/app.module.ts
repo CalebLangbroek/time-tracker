@@ -11,6 +11,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import 'hammerjs';
 
@@ -44,7 +45,8 @@ import { DurationPipe } from './pipes/duration.pipe';
 		MatExpansionModule,
 		MatDatepickerModule,
 		MatNativeDateModule,
-		MatTooltipModule
+		MatTooltipModule,
+		MatSnackBarModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]

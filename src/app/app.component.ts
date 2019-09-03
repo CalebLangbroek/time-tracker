@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
 	 * Set boolean variables.
 	 */
 	setBoolChecks() {
-		if (this.innerWidth < NAV_BREAK_POINT) {
+		if (this.innerWidth <= NAV_BREAK_POINT) {
 			this.isMobile = true;
 			this.showSideNav = false;
 		} else {

@@ -17,9 +17,11 @@ export class TimerService {
 		this.intervalSub = interval(1000).subscribe(() => this.duration++);
 	}
 
-	stopTimer(): void {
+	stopTimer(): number {
 		this.intervalSub.unsubscribe();
+		const duration = this.duration;
 		this.clearTimer();
+		return duration;
 	}
 
 	getDuration(): number {

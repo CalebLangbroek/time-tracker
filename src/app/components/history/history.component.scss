@@ -1,6 +1,8 @@
-$cardbg: rgb(255, 255, 255);
+$bp-tablet: 768px;
+$cardbg: rgb(250, 250, 250);
 $blue: rgb(87, 168, 255);
 $padding: 10px;
+$history-padding: 46px;
 
 .history-container {
 	padding: $padding;
@@ -28,5 +30,12 @@ $padding: 10px;
 		.history-edit{
 			background: darken($cardbg, 10%);
 		}
+	}
+}
+
+@media (max-width: $bp-tablet) {
+	// To account for nav toggle button at top on mobile
+	.history-container {
+		margin-bottom: $history-padding;
 	}
 }

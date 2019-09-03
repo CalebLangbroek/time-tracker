@@ -1,34 +1,36 @@
+// Screen sizes
 $bp-phone: 576px;
 $bp-tablet: 768px;
 $bp-laptop: 992px;
 $bp-desktop: 1200px;
 
+// Colors
+$contentbg: whitesmoke;
+$navbg: rgba(32, 32, 32);
+
+// Sizing
+$full: 100%;
+$navsize: 275px;
+
 .app-container {
 	display: flex;
 	height: 100vh;
-	width: 100%;
+	width: $full;
 
 	.app-nav-toggle{
 		margin: 10px;
 	}
 
 	.app-nav {
-		width: 25%;
-		max-width: 275px;
-		background: rgba(32, 32, 32)
+		width: $navsize;
+		background: $navbg;
 	}
 	
-	.app-nav-mobile {
-		position: absolute;
-		z-index: 2;
-		top: 0;
-		bottom: 0;
-	}
-
 	.app-content {
 		flex: 1;
-		height: 100%;
-		width: 100%;
+		height: $full;
+		width: $full;
+		background-color: $contentbg;
 	}
 }
 
@@ -40,8 +42,13 @@ $bp-desktop: 1200px;
 	
 }
 
-@media (min-width: $bp-tablet) {
-	
+@media (max-width: $bp-tablet) {
+	.app-nav {
+		position: absolute;
+		z-index: 2;
+		top: 0;
+		bottom: 0;
+	}
 }
 
 @media (min-width: $bp-laptop) {
