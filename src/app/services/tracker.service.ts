@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TimerService } from './timer.service';
 import { TrackerEntry } from '../models/tracker-entry.model';
+import { StorageService } from './storage.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -10,18 +11,9 @@ export class TrackerService {
 	private startDate: Date;
 	trackerEntries: TrackerEntry[];
 
-	constructor(private timer: TimerService) {
-		// TODO: Remove test data
-		this.trackerEntries = [];
-
-		for (let i = 0; i < 5; i++) {
-			this.trackerEntries.push({
-				name: 'Test ' + i.toString(),
-				duration: 0,
-				start: new Date(),
-				end: new Date()
-			});
-		}
+	constructor(private timer: TimerService, private storage: StorageService) {
+		// Get our entries from local storage
+		this.trackerEntries = this.storage.getEntries();
 	}
 
 	getTrackerEntries() {
@@ -46,6 +38,9 @@ export class TrackerService {
 			end: new Date(),
 			isOpen: false
 		});
+
+		// Save the entries
+		this.storage.setEntries(this.trackerEntries);
 	}
 
 	getTimerDuration(): number {
@@ -129,6 +124,9 @@ export class TrackerService {
 	 */
 	deleteTrackerEntry(index: number) {
 		this.trackerEntries.splice(index, 1);
+
+		// Save the entries
+		this.storage.setEntries(this.trackerEntries);
 	}
 
 	/**
