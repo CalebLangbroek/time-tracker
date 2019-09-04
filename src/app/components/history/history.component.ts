@@ -32,19 +32,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 		this.trackerEntries[index].isOpen = !this.trackerEntries[index].isOpen;
 	}
 
-	onChangeTime(index: number, time: string, prop: string) {
-		if (!time) {
-			return;
-		}
-
-		this.tracker.setTrackerEntryTime(index, time, prop);
-	}
-
-	onChangeDate(index: number, date: string, prop: string) {
-		if (!date) {
-			return;
-		}
-
-		this.tracker.setTrackerEntryDate(index, date, prop);
+	onSaveEntry(index: number, startTime: string, startDate: string, endTime: string, endDate: string) {
+		this.tracker.setTrackerEntry(index, startTime, startDate, endTime, endDate);
 	}
  }

@@ -54,67 +54,42 @@ export class TrackerService {
 	 */
 	setTrackerEntryName(index: number, name: string) {
 		this.trackerEntries[index].name = name;
+
+		// Save the entries
+		this.storage.setEntries(this.trackerEntries);
 	}
 
 	/**
-	 * Set a new time for a tracker entry.
+	 * Save the times and dates for the tracker entry.
 	 * @param index Index of the tracker entry in the array.
-	 * @param time New time in form 'HH:mm'.
+	 * @param startTime New start time in form 'HH:mm'.
+	 * @param startDate .
+	 * @param endTime New end time in form 'HH:mm'.
+	 * @param endDate .
 	 */
-	setTrackerEntryTime(index: number, time: string, prop: string) {
-		// Check that we are updating start or end
-		if (prop !== 'start' && prop !== 'end') {
-			return;
-		}
+	setTrackerEntry(index: number, startTime: string, startDate: string, endTime: string, endDate: string) {
+		const start = new Date(`${startTime} ${startDate}`);
+		const end = new Date(`${endTime} ${endDate}`);
+		const duration = this.getDuration(start, end);
 
-		// Get the hours and minutes from the time
-		const timeSplit = time.split(':');
-		const hours = parseInt(timeSplit[0], 10);
-		const minutes = parseInt(timeSplit[1], 10);
-
-		// Set the hours and minutes
-		this.trackerEntries[index][prop].setHours(hours);
-		this.trackerEntries[index][prop].setMinutes(minutes);
-
-		// Update the tracker's duration
-		this.calculateTrackerEntryDuration(index);
+		this.trackerEntries[index].start = start;
+		this.trackerEntries[index].end = end;
+		this.trackerEntries[index].duration = duration;
 
 		// Sort the entries in reverse chronological order
 		this.trackerEntries.sort(this.compareTrackerEntries);
-	}
 
-	setTrackerEntryDate(index: number, fullDate: string, prop: string) {
-		// Check that we are updating start or end
-		if (prop !== 'start' && prop !== 'end') {
-			return;
-		}
-
-		// Get the date, month, and year from the full date
-		const fullDateSplit = fullDate.split('/');
-		const date = parseInt(fullDateSplit[1], 10);
-		const month = parseInt(fullDateSplit[0], 10) - 1;
-		const year = parseInt(fullDateSplit[2], 10);
-
-		// Set the date, month, and year
-		this.trackerEntries[index][prop].setDate(date);
-		this.trackerEntries[index][prop].setMonth(month);
-		this.trackerEntries[index][prop].setFullYear(year);
-
-		// Update the tracker's duration
-		this.calculateTrackerEntryDuration(index);
-
-		// Sort the entries in reverse chronological order
-		this.trackerEntries.sort(this.compareTrackerEntries);
+		// Save the entries
+		this.storage.setEntries(this.trackerEntries);
 	}
 
 	/**
 	 * Calculate the duration of a tracker entry.
-	 * @param index Index of the tracker entry in the array.
+	 * @param start Starting date.
+	 * @param end Ending date.
 	 */
-	calculateTrackerEntryDuration(index: number) {
-		const trackerEntry = this.trackerEntries[index];
-		const duration = (trackerEntry.end.getTime() - trackerEntry.start.getTime()) / 1000;
-		this.trackerEntries[index].duration = duration;
+	getDuration(start: Date, end: Date): number {
+		return (end.getTime() - start.getTime()) / 1000;
 	}
 
 	/**

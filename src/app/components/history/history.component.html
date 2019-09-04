@@ -21,29 +21,39 @@
 		</div>
 
 		<mat-card class="history-edit" *ngIf="timeEntry.isOpen">
-			<mat-form-field class="history-entry-input">
-				<input type="text" [value]="timeEntry.start | date:'HH:mm'" [type]="'time'" placeholder="Start Time"
-					(change)="onChangeTime(i, timeEntryStartTime.value, 'start')" #timeEntryStartTime matInput>
-			</mat-form-field>
+			<form class="history-form"
+				(ngSubmit)="onSaveEntry(i, startTimeInput.value, startDateInput.value, endTimeInput.value, endDateInput.value)">
 
-			<mat-form-field class="history-entry-input">
-				<input [matDatepicker]="startDate" placeholder="Start Date" [value]="timeEntry.start"
-					(dateChange)="onChangeDate(i, timeEntryStartDate.value, 'start')" #timeEntryStartDate matInput>
-				<mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
-				<mat-datepicker #startDate></mat-datepicker>
-			</mat-form-field>
+				<mat-form-field class="history-entry-input">
+					<input type="text" [value]="timeEntry.start | date:'HH:mm'" [type]="'time'" placeholder="Start Time"
+						#startTimeInput matInput>
+				</mat-form-field>
 
-			<mat-form-field class="history-entry-input">
-				<input type="text" [value]="timeEntry.end | date:'HH:mm'" [type]="'time'" placeholder="End Time"
-					(change)="onChangeTime(i, timeEntryEndTime.value, 'end')" #timeEntryEndTime matInput>
-			</mat-form-field>
+				<mat-form-field class="history-entry-input">
+					<input [matDatepicker]="startDate" placeholder="Start Date" [value]="timeEntry.start" required
+						#startDateInput matInput>
+					<mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+					<mat-datepicker #startDate></mat-datepicker>
+				</mat-form-field>
 
-			<mat-form-field class="history-entry-input">
-				<input [matDatepicker]="endDate" placeholder="End Date" [value]="timeEntry.end"
-					(dateChange)="onChangeDate(i, timeEntryEndDate.value, 'end')" #timeEntryEndDate matInput>
-				<mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
-				<mat-datepicker #endDate></mat-datepicker>
-			</mat-form-field>
+				<mat-form-field class="history-entry-input">
+					<input type="text" [value]="timeEntry.end | date:'HH:mm'" [type]="'time'" placeholder="End Time"
+						#endTimeInput matInput>
+				</mat-form-field>
+
+				<mat-form-field class="history-entry-input">
+					<input [matDatepicker]="endDate" placeholder="End Date" [value]="timeEntry.end" #endDateInput
+						matInput>
+					<mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+					<mat-datepicker #endDate></mat-datepicker>
+				</mat-form-field>
+
+				<button mat-raised-button class="history-submit" color="primary">
+					Save
+				</button>
+
+			</form>
+
 		</mat-card>
 
 	</mat-card>

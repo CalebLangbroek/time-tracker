@@ -1,6 +1,15 @@
+// Screen sizes
+$bp-phone: 576px;
 $bp-tablet: 768px;
+$bp-laptop: 992px;
+$bp-desktop: 1200px;
+
+// Colors
 $cardbg: rgb(250, 250, 250);
 $blue: rgb(87, 168, 255);
+$green: rgb(40, 167, 69);
+
+// Sizing
 $padding: 10px;
 $history-padding: 46px;
 
@@ -30,6 +39,37 @@ $history-padding: 46px;
 		.history-edit{
 			background: darken($cardbg, 10%);
 		}
+
+		.history-submit {
+			background-color: $green;
+			width: fit-content;
+		}
+
+		.history-form {
+			display: grid;
+			align-items: center;
+		}
+	}
+}
+
+@media (min-width: 0) {
+	.history-form {
+		grid-template-columns: auto;
+		grid-template-rows: repeat(5, auto);
+	}
+}
+
+@media (min-width: $bp-phone) {
+	.history-form {
+		grid-template-columns: repeat(2, auto);
+		grid-template-rows: repeat(3, auto);
+	}
+}
+
+@media (min-width: $bp-desktop) {
+	.history-form {
+		grid-template-columns: repeat(5, auto);
+		grid-template-rows: auto;
 	}
 }
 

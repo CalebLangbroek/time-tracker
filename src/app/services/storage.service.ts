@@ -25,13 +25,22 @@ export class StorageService {
 			return [];
 		}
 
-		const entries: TrackerEntry[] = JSON.parse(entriesStr);
+		let entries: TrackerEntry[] = JSON.parse(entriesStr);
 
 		// Set default start and end
 		start = !start ? 0 : start;
 		end = !end || end > entries.length ? entries.length : end;
 
-		return entries.slice(start, end);
+		entries = entries.slice(start, end);
+
+		// Re-create the dates and close the entries
+		for (const entry of entries) {
+			entry.start = new Date(entry.start);
+			entry.end = new Date(entry.end);
+			entry.isOpen = false;
+		}
+
+		return entries;
 	}
 
 	/**
