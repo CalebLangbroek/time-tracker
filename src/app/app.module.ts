@@ -22,6 +22,7 @@ import { HomeComponent } from './components/home/home.component';
 import { TrackerComponent } from './components/tracker/tracker.component';
 import { HistoryComponent } from './components/history/history.component';
 import { DurationPipe } from './pipes/duration.pipe';
+import { NotificationsComponent } from './components/notifications/notifications.component';
 
 @NgModule({
 	declarations: [
@@ -31,6 +32,7 @@ import { DurationPipe } from './pipes/duration.pipe';
 		TrackerComponent,
 		HistoryComponent,
 		DurationPipe,
+		NotificationsComponent,
 	],
 	imports: [
 		BrowserModule,

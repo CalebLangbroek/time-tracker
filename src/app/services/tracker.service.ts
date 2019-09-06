@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 
 import { TimerService } from './timer.service';
-import { TrackerEntry } from '../models/tracker-entry.model';
 import { StorageService } from './storage.service';
+import { NotificationService } from './notification.service';
+import { TrackerEntry } from '../models/tracker-entry.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -11,7 +12,7 @@ export class TrackerService {
 	private startDate: Date;
 	trackerEntries: TrackerEntry[];
 
-	constructor(private timer: TimerService, private storage: StorageService) {
+	constructor(private timer: TimerService, private storage: StorageService, private notification: NotificationService) {
 		// Get our entries from local storage
 		this.trackerEntries = this.storage.getEntries();
 	}
@@ -57,6 +58,9 @@ export class TrackerService {
 
 		// Save the entries
 		this.storage.setEntries(this.trackerEntries);
+
+		// Send notification
+		this.notification.sendNotification({ message: 'Entry saved', type: 'success' });
 	}
 
 	/**
@@ -81,6 +85,9 @@ export class TrackerService {
 
 		// Save the entries
 		this.storage.setEntries(this.trackerEntries);
+
+		// Send notification
+		this.notification.sendNotification({ message: 'Entry saved', type: 'success' });
 	}
 
 	/**
@@ -102,6 +109,9 @@ export class TrackerService {
 
 		// Save the entries
 		this.storage.setEntries(this.trackerEntries);
+
+		// Send notification
+		this.notification.sendNotification({ message: 'Entry deleted', type: 'success' });
 	}
 
 	/**
