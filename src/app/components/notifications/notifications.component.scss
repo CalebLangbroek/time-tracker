@@ -1,0 +1,30 @@
+.notifications-container {
+	display: flex;
+	align-items: center;
+	box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
+    margin-bottom: 20px;
+	padding: 12px 20px;
+	max-width: 33vw;
+	min-width: 344px;
+	
+	.notification-message{
+		flex: 1;
+	}
+}
+.success {
+	color: #1B5E20;
+	background-color: #A5D6A7;
+	border-color: #A5D6A7;
+}
+
+.info {
+	color: #01579B;
+	background-color: #81D4FA;
+	border-color: #81D4FA;
+}
+
+.danger {
+	color: #B71C1C;
+	background-color: #EF9A9A;
+	border-color: #EF9A9A;
+}

@@ -1,1 +1,6 @@
-<p>notifications works!</p>
+<div class="notifications-container" [ngClass]="notification.type" *ngFor="let notification of notifications; index as i">
+	<div class="notification-message">
+		{{ notification.message }}
+	</div>
+	<mat-icon class="md-light notification-close" (click)="removeNotification(i)">close</mat-icon>
+</div>
