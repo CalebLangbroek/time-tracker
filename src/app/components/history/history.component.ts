@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { TrackerService } from 'src/app/services/tracker.service';
-import { TrackerEntry } from 'src/app/models/tracker-entry.model';
+import { DayEntry } from '../../models/day-entry.model';
 
 @Component({
 	selector: 'app-history',
@@ -9,30 +9,30 @@ import { TrackerEntry } from 'src/app/models/tracker-entry.model';
 	styleUrls: ['./history.component.scss']
 })
 export class HistoryComponent implements OnInit, OnDestroy {
-	trackerEntries: TrackerEntry[];
+	dayEntries: DayEntry[];
 
 	constructor(private tracker: TrackerService) { }
 
 	ngOnInit() {
-		this.trackerEntries = this.tracker.getTrackerEntries();
+		this.dayEntries = this.tracker.getDayEntries();
 	}
 
 	ngOnDestroy() {
 	}
 
-	onChangeName(index: number, name: string) {
-		this.tracker.setTrackerEntryName(index, name);
+	onChangeName(dayIndex: number, timeIndex: number, name: string) {
+		this.tracker.setTimeEntryName(dayIndex, timeIndex, name);
 	}
 
-	onClickDelete(index: number) {
-		this.tracker.deleteTrackerEntry(index);
+	onClickDelete(dayIndex: number, timeIndex: number) {
+		this.tracker.deleteTimeEntry(dayIndex, timeIndex);
 	}
 
-	onClickEdit(index: number) {
-		this.trackerEntries[index].isOpen = !this.trackerEntries[index].isOpen;
+	onClickEdit(dayIndex: number, timeIndex: number) {
+		this.dayEntries[dayIndex].entries[timeIndex].isOpen = !this.dayEntries[dayIndex].entries[timeIndex].isOpen;
 	}
 
-	onSaveEntry(index: number, startTime: string, startDate: string, endTime: string, endDate: string) {
-		this.tracker.setTrackerEntry(index, startTime, startDate, endTime, endDate);
+	onSaveEntry(dayIndex: number, timeIndex: number, startTime: string, startDate: string, endTime: string, endDate: string) {
+		this.tracker.setTimeEntryStartEnd(dayIndex, timeIndex, startTime, startDate, endTime, endDate);
 	}
  }

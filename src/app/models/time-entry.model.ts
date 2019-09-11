@@ -1,4 +1,4 @@
-export interface TrackerEntry {
+export interface TimeEntry {
 	name: string;
 	duration: number;
 	start: Date;

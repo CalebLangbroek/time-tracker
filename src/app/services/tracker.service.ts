@@ -3,22 +3,23 @@ import { Injectable } from '@angular/core';
 import { TimerService } from './timer.service';
 import { StorageService } from './storage.service';
 import { NotificationService } from './notification.service';
-import { TrackerEntry } from '../models/tracker-entry.model';
+import { DayEntry } from '../models/day-entry.model';
+import { TimeEntry } from '../models/time-entry.model';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class TrackerService {
 	private startDate: Date;
-	trackerEntries: TrackerEntry[];
+	dayEntries: DayEntry[];
 
 	constructor(private timer: TimerService, private storage: StorageService, private notification: NotificationService) {
 		// Get our entries from local storage
-		this.trackerEntries = this.storage.getEntries();
+		this.dayEntries = this.storage.getEntries();
 	}
 
-	getTrackerEntries() {
-		return this.trackerEntries;
+	getDayEntries() {
+		return this.dayEntries;
 	}
 
 	startTracker() {
@@ -31,17 +32,23 @@ export class TrackerService {
 		// Stop the timer and get its duration
 		const duration = this.timer.stopTimer();
 
-		// Save the entry to the beginning of the array
-		this.trackerEntries.unshift({
+		const entry: TimeEntry = {
 			name,
 			duration,
 			start: this.startDate,
 			end: new Date(),
 			isOpen: false
-		});
+		};
+
+		// Get the day entry that the entry will be stored in
+		const dateStr = this.formatDate(this.startDate);
+		const dayEntry = this.getDayEntry(dateStr);
+
+		// Save the entry to the beginning of the array
+		dayEntry.entries.unshift(entry);
 
 		// Save the entries
-		this.storage.setEntries(this.trackerEntries);
+		this.storage.setEntries(this.dayEntries);
 	}
 
 	getTimerDuration(): number {
@@ -49,49 +56,78 @@ export class TrackerService {
 	}
 
 	/**
+	 * Search for a the day entry for a certain day in the day entries.
+	 * Add it to the array of day entries if it isn't there.
+	 * @param date Date to look for. Should be in the form: "YYYY-MM-DD".
+	 * @return Day entry with the date that was searched for.
+	 */
+	getDayEntry(date: string) {
+		// Search for the day entry
+		let dayEntry = this.dayEntries.find(el => {
+			return el.date === date;
+		});
+
+		// Add the date if it doesn't exist
+		if (!dayEntry) {
+			dayEntry = {
+				date,
+				entries: []
+			};
+			this.dayEntries.push(dayEntry);
+			this.dayEntries.sort(this.compareDayEntries);
+		}
+
+		return dayEntry;
+	}
+
+	/**
 	 * Set the name of an entry at a given index.
 	 * @param index Index of the entry to set.
 	 * @param name Value to set the name to.
 	 */
-	setTrackerEntryName(index: number, name: string) {
-		this.trackerEntries[index].name = name;
+	setTimeEntryName(dayIndex: number, timeIndex: number, name: string) {
+		this.dayEntries[dayIndex].entries[timeIndex].name = name;
 
 		// Save the entries
-		this.storage.setEntries(this.trackerEntries);
+		this.storage.setEntries(this.dayEntries);
 
 		// Send notification
 		this.notification.sendNotification({ message: 'Entry saved', type: 'success' });
 	}
 
 	/**
-	 * Save the times and dates for the tracker entry.
-	 * @param index Index of the tracker entry in the array.
+	 * Save the start and end of a time entry.
+	 * @param index Index of the time entry in the array.
 	 * @param startTime New start time in form 'HH:mm'.
 	 * @param startDate .
 	 * @param endTime New end time in form 'HH:mm'.
 	 * @param endDate .
 	 */
-	setTrackerEntry(index: number, startTime: string, startDate: string, endTime: string, endDate: string) {
+	setTimeEntryStartEnd(dayIndex: number, timeIndex: number, startTime: string, startDate: string, endTime: string, endDate: string) {
+		// Get the new variables
 		const start = new Date(`${startTime} ${startDate}`);
 		const end = new Date(`${endTime} ${endDate}`);
 		const duration = this.getDuration(start, end);
 
-		this.trackerEntries[index].start = start;
-		this.trackerEntries[index].end = end;
-		this.trackerEntries[index].duration = duration;
+		// TODO: if start date changes add to new day entry, remove from old
 
-		// Sort the entries in reverse chronological order
-		this.trackerEntries.sort(this.compareTrackerEntries);
+		// Assign the new values
+		this.dayEntries[dayIndex].entries[timeIndex].start = start;
+		this.dayEntries[dayIndex].entries[timeIndex].end = end;
+		this.dayEntries[dayIndex].entries[timeIndex].duration = duration;
+
+		// Sort the time entries in reverse chronological order
+		this.dayEntries[dayIndex].entries.sort(this.compareTimeEntries);
 
 		// Save the entries
-		this.storage.setEntries(this.trackerEntries);
+		this.storage.setEntries(this.dayEntries);
 
 		// Send notification
 		this.notification.sendNotification({ message: 'Entry saved', type: 'success' });
 	}
 
 	/**
-	 * Calculate the duration of a tracker entry.
+	 * Calculate the duration of a time entry.
 	 * @param start Starting date.
 	 * @param end Ending date.
 	 */
@@ -104,23 +140,53 @@ export class TrackerService {
 	 * The re-sort the array.
 	 * @param index Index of the entry to delete
 	 */
-	deleteTrackerEntry(index: number) {
-		this.trackerEntries.splice(index, 1);
+	deleteTimeEntry(dayIndex: number, timeIndex: number) {
+		this.dayEntries[dayIndex].entries.splice(timeIndex, 1);
 
 		// Save the entries
-		this.storage.setEntries(this.trackerEntries);
+		this.storage.setEntries(this.dayEntries);
 
 		// Send notification
 		this.notification.sendNotification({ message: 'Entry deleted', type: 'success' });
 	}
 
 	/**
-	 * Compares two tracker entries.
-	 * @param x First tracker entry to be compared.
-	 * @param y Second tracker entry to be compared.
+	 * Return the date from a Date object in the form 'YYYY-MM-DD'
+	 * @param dateObj Date to format.
+	 */
+	private formatDate(dateObj: Date) {
+		return dateObj.toISOString().slice(0, 10);
+	}
+
+	/**
+	 * Compares two day entries.
+	 * @param x First day entry to be compared.
+	 * @param y Second day entry to be compared.
 	 * @returns -1 if x is before y, 0 if x and y are equal, and 1 if y is before x.
 	 */
-	private compareTrackerEntries(x: TrackerEntry, y: TrackerEntry): number {
+	private compareDayEntries(x: DayEntry, y: DayEntry): number {
+		// Remove dashes so we can find the newest
+		const xDateNum = parseInt(x.date.replace('-', ''), 10);
+		const yDateNum = parseInt(y.date.replace('-', ''), 10);
+
+		if (xDateNum > yDateNum) {
+			return -1;
+		}
+
+		if (xDateNum < yDateNum) {
+			return 1;
+		}
+
+		return 0;
+	}
+
+	/**
+	 * Compares two time entries.
+	 * @param x First time entry to be compared.
+	 * @param y Second time entry to be compared.
+	 * @returns -1 if x is before y, 0 if x and y are equal, and 1 if y is before x.
+	 */
+	private compareTimeEntries(x: TimeEntry, y: TimeEntry): number {
 		if (x.start.getTime() > y.start.getTime()) {
 			return -1;
 		}

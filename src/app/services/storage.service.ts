@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { TrackerEntry } from '../models/tracker-entry.model';
+import { DayEntry } from '../models/day-entry.model';
 
 const STORE_KEY = 'time-tracker-entries';
 
@@ -16,38 +16,40 @@ export class StorageService {
 	 * @param start Start position to return. Defaults to start of the array.
 	 * @param end End position to return. Defaults to end of the array.
 	 */
-	getEntries(start?: number, end?: number): TrackerEntry[] {
+	getEntries(start?: number, end?: number): DayEntry[] {
 		// Get entries from local storage
-		const entriesStr = localStorage.getItem(STORE_KEY);
+		const dayEntriesStr = localStorage.getItem(STORE_KEY);
 
 		// Return an empty array if nothing in local storage
-		if (!entriesStr) {
+		if (!dayEntriesStr) {
 			return [];
 		}
 
-		let entries: TrackerEntry[] = JSON.parse(entriesStr);
+		let dayEntries: DayEntry[] = JSON.parse(dayEntriesStr);
 
 		// Set default start and end
 		start = !start ? 0 : start;
-		end = !end || end > entries.length ? entries.length : end;
+		end = !end || end > dayEntries.length ? dayEntries.length : end;
 
-		entries = entries.slice(start, end);
+		dayEntries = dayEntries.slice(start, end);
 
 		// Re-create the dates and close the entries
-		for (const entry of entries) {
-			entry.start = new Date(entry.start);
-			entry.end = new Date(entry.end);
-			entry.isOpen = false;
+		for (const day of dayEntries) {
+			for (const timeEntry of day.entries) {
+				timeEntry.start = new Date(timeEntry.start);
+				timeEntry.end = new Date(timeEntry.end);
+				timeEntry.isOpen = false;
+			}
 		}
 
-		return entries;
+		return dayEntries;
 	}
 
 	/**
 	 * Save the entries to local storage.
 	 * @param entries Entries to save.
 	 */
-	setEntries(entries: TrackerEntry[]) {
+	setEntries(entries: DayEntry[]) {
 		localStorage.setItem(STORE_KEY, JSON.stringify(entries));
 	}
 
