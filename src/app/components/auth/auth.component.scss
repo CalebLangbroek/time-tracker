@@ -1,0 +1,19 @@
+.auth-container {
+	height: 100%;
+	width: 100%;
+	display: grid;
+	grid-template-columns: 1fr 2fr 1fr;
+	grid-template-rows: auto auto auto;
+	grid-template-areas:
+		". . . "
+		". cd ."
+		". . . ";
+
+	.auth-card {
+        grid-area: cd;
+		margin: 10px;
+	}
+	.auth-form {
+		display: grid;
+	}
+}

@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -12,6 +13,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import 'hammerjs';
 
@@ -23,6 +25,8 @@ import { TrackerComponent } from './components/tracker/tracker.component';
 import { HistoryComponent } from './components/history/history.component';
 import { DurationPipe } from './pipes/duration.pipe';
 import { NotificationsComponent } from './components/notifications/notifications.component';
+import { AuthComponent } from './components/auth/auth.component';
+import { AuthInterceptorService } from './services/auth-interceptor.service';
 
 @NgModule({
 	declarations: [
@@ -33,6 +37,7 @@ import { NotificationsComponent } from './components/notifications/notifications
 		HistoryComponent,
 		DurationPipe,
 		NotificationsComponent,
+		AuthComponent
 	],
 	imports: [
 		BrowserModule,
@@ -48,9 +53,17 @@ import { NotificationsComponent } from './components/notifications/notifications
 		MatDatepickerModule,
 		MatNativeDateModule,
 		MatTooltipModule,
-		MatSnackBarModule
+		MatSnackBarModule,
+		HttpClientModule,
+		MatProgressSpinnerModule
 	],
-	providers: [],
+	providers: [
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: AuthInterceptorService,
+			multi: true
+		}
+	],
 	bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

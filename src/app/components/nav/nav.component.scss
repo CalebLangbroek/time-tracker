@@ -1,12 +1,30 @@
+// Screen sizes
+$bp-phone: 576px;
+$bp-tablet: 768px;
+$bp-laptop: 992px;
+$bp-desktop: 1200px;
+
 $padding: 10px;
 
 .nav-container {
 	height: 100%; 
-	width: 100%; 
+	width: 100%;
+	color: white;
+	padding: $padding;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+}
 
+@media (max-width: $bp-tablet) {
 	.nav-close {
-		display: grid;
-		justify-content: right;
-		padding: $padding;
+		display: flex;
+		justify-content: flex-end;
+	}
+}
+
+@media (min-width: $bp-tablet) {
+	.nav-close {
+		display: none;
 	}
 }

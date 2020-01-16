@@ -1,5 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 
+import { AuthService } from './services/auth.service';
+
 const NAV_BREAK_POINT = 768;
 
 @Component({
@@ -19,11 +21,12 @@ export class AppComponent implements OnInit {
 		this.setBoolChecks();
 	}
 
-	constructor() { }
+	constructor(private auth: AuthService) { }
 
 	ngOnInit() {
 		this.innerWidth = window.innerWidth;
 		this.setBoolChecks();
+		this.auth.signInFromLocalStorage();
 	}
 
 	/**

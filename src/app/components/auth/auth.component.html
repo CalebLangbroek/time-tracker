@@ -1,0 +1,55 @@
+<div class="auth-container">
+	<div class="auth-card">
+		<h1>{{ isSignIn ? 'Sign In' : 'Sign Up' }}</h1>
+		<form
+			class="auth-form"
+			(ngSubmit)="onFormSubmitted(form)"
+			#form="ngForm"
+		>
+			<mat-form-field appearance="outline">
+				<mat-label>Email</mat-label>
+				<input
+					[type]="'email'"
+					name="email"
+					matInput
+					#email
+					email
+					required
+					ngModel
+				/>
+				<mat-error *ngIf="!email.valid">Not a valid email</mat-error>
+			</mat-form-field>
+			<mat-form-field appearance="outline">
+				<mat-label>Password</mat-label>
+				<input
+					[type]="'password'"
+					name="password"
+					matInput
+					#password
+					required
+					minlength="6"
+					ngModel
+				/>
+				<mat-error *ngIf="!email.valid">Password must be at least 6 characters long</mat-error>
+			</mat-form-field>
+			<button
+				mat-raised-button
+				class="history-submit"
+				color="primary"
+				*ngIf="!isLoading"
+			>
+				{{ isSignIn ? 'Sign In' : 'Sign Up' }}
+			</button>
+			<mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
+		</form>
+		<p>
+			<a (click)="onChangeMode()">
+				{{
+					isSignIn
+						? "Don't have an account?"
+						: 'Already have an account?'
+				}}
+			</a>
+		</p>
+	</div>
+</div>
