@@ -57,7 +57,7 @@ export class AuthService {
 	signInFromLocalStorage() {
 		const userJson = JSON.parse(localStorage.getItem(USER_DATA_KEY));
 
-		if(!userJson) {
+		if (!userJson) {
 			return;
 		}
 

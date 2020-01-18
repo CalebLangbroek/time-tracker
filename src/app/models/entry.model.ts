@@ -1,4 +1,5 @@
-export interface TimeEntry {
+export interface Entry {
+	id?: string;
 	name: string;
 	duration: number;
 	start: Date;

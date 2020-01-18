@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { TrackerService } from 'src/app/services/tracker.service';
-import { DayEntry } from '../../models/day-entry.model';
+import { Entry } from '../../models/entry.model';
 
 @Component({
 	selector: 'app-history',
@@ -9,30 +9,46 @@ import { DayEntry } from '../../models/day-entry.model';
 	styleUrls: ['./history.component.scss']
 })
 export class HistoryComponent implements OnInit, OnDestroy {
-	dayEntries: DayEntry[];
+	entries: Entry[];
+	isLoading = false;
 
-	constructor(private tracker: TrackerService) { }
+	constructor(private tracker: TrackerService) {}
 
 	ngOnInit() {
-		this.dayEntries = this.tracker.getDayEntries();
+		this.isLoading = true;
+		this.tracker
+			.getEntries()
+			.then(entries => (this.entries = entries))
+			.finally(() => (this.isLoading = false));
 	}
 
-	ngOnDestroy() {
+	ngOnDestroy() {}
+
+	onChangeName(index: number, name: string) {
+		this.tracker.setEntryName(index, name);
 	}
 
-	onChangeName(dayIndex: number, timeIndex: number, name: string) {
-		this.tracker.setTimeEntryName(dayIndex, timeIndex, name);
+	onClickDelete(index: number) {
+		this.tracker.deleteEntry(index);
 	}
 
-	onClickDelete(dayIndex: number, timeIndex: number) {
-		this.tracker.deleteTimeEntry(dayIndex, timeIndex);
+	onClickEdit(index: number) {
+		this.entries[index].isOpen = !this.entries[index].isOpen;
 	}
 
-	onClickEdit(dayIndex: number, timeIndex: number) {
-		this.dayEntries[dayIndex].entries[timeIndex].isOpen = !this.dayEntries[dayIndex].entries[timeIndex].isOpen;
+	onSaveEntry(
+		index: number,
+		startTime: string,
+		startDate: string,
+		endTime: string,
+		endDate: string
+	) {
+		this.tracker.setEntryStartEnd(
+			index,
+			startTime,
+			startDate,
+			endTime,
+			endDate
+		);
 	}
-
-	onSaveEntry(dayIndex: number, timeIndex: number, startTime: string, startDate: string, endTime: string, endDate: string) {
-		this.tracker.setTimeEntryStartEnd(dayIndex, timeIndex, startTime, startDate, endTime, endDate);
-	}
- }
+}

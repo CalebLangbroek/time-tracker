@@ -42,7 +42,6 @@ yarn-error.log
 testem.log
 /typings
 push_live
-src/environments/
 
 # System Files
 .DS_Store
