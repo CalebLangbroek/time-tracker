@@ -1,116 +1,126 @@
 <div class="history-container">
 	<mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
-	<div *ngIf="!isLoading && entries.length == 0">
-		No entries found.
+	<div *ngIf="!isLoading && groupedEntries.length == 0">
+		It looks like you don't have any entries yet
 	</div>
-	<mat-card
-		class="history-entry"
-		*ngFor="let timeEntry of entries; index as timeIndex"
-	>
-		<div class="history-main">
-			<mat-form-field class="history-entry-name">
-				<input
-					type="text"
-					[value]="timeEntry.name"
-					(change)="
-						onChangeName(timeIndex, timeEntryName.value)
+	<div *ngFor="let date of groupedEntries; index as dayIndex">
+		<h3>{{ date.dateStr }}</h3>
+		<p>{{ date.duration | duration }}</p>
+		<mat-divider></mat-divider>
+		<mat-card
+			class="history-entry"
+			*ngFor="let timeEntry of date.entries; index as entryIndex"
+		>
+			<div class="history-main">
+				<mat-form-field class="history-entry-name">
+					<input
+						type="text"
+						[value]="timeEntry.name"
+						(change)="
+							onChangeName(
+								timeEntry.actualIndex,
+								timeEntryName.value
+							)
+						"
+						#timeEntryName
+						matInput
+					/>
+				</mat-form-field>
+				<div class="history-entry-duration">
+					{{ timeEntry.duration | duration }}
+				</div>
+				<div class="history-entry-delete" matTooltip="Click to delete">
+					<mat-icon
+						class="md-red"
+						(click)="onClickDelete(timeEntry.actualIndex)"
+						>delete</mat-icon
+					>
+				</div>
+				<div class="history-entry-delete" matTooltip="Click to edit">
+					<mat-icon (click)="onClickEdit(dayIndex, entryIndex)">
+						<span *ngIf="!timeEntry.isOpen"
+							>keyboard_arrow_down</span
+						>
+						<span *ngIf="timeEntry.isOpen">keyboard_arrow_up</span>
+					</mat-icon>
+				</div>
+			</div>
+
+			<mat-card class="history-edit" *ngIf="timeEntry.isOpen">
+				<form
+					class="history-form"
+					(ngSubmit)="
+						onSaveEntry(
+							timeEntry.actualIndex,
+							startTimeInput.value,
+							startDateInput.value,
+							endTimeInput.value,
+							endDateInput.value
+						)
 					"
-					#timeEntryName
-					matInput
-				/>
-			</mat-form-field>
-			<div class="history-entry-duration">
-				{{ timeEntry.duration | duration }}
-			</div>
-			<div class="history-entry-delete" matTooltip="Click to delete">
-				<mat-icon
-					class="md-red"
-					(click)="onClickDelete(timeIndex)"
-					>delete</mat-icon
 				>
-			</div>
-			<div class="history-entry-delete" matTooltip="Click to edit">
-				<mat-icon (click)="onClickEdit(timeIndex)">
-					<span *ngIf="!timeEntry.isOpen">keyboard_arrow_down</span>
-					<span *ngIf="timeEntry.isOpen">keyboard_arrow_up</span>
-				</mat-icon>
-			</div>
-		</div>
+					<mat-form-field class="history-entry-input">
+						<input
+							type="text"
+							[value]="timeEntry.start | date: 'HH:mm'"
+							[type]="'time'"
+							placeholder="Start Time"
+							#startTimeInput
+							matInput
+						/>
+					</mat-form-field>
 
-		<mat-card class="history-edit" *ngIf="timeEntry.isOpen">
-			<form
-				class="history-form"
-				(ngSubmit)="
-					onSaveEntry(
-						timeIndex,
-						startTimeInput.value,
-						startDateInput.value,
-						endTimeInput.value,
-						endDateInput.value
-					)
-				"
-			>
-				<mat-form-field class="history-entry-input">
-					<input
-						type="text"
-						[value]="timeEntry.start | date: 'HH:mm'"
-						[type]="'time'"
-						placeholder="Start Time"
-						#startTimeInput
-						matInput
-					/>
-				</mat-form-field>
+					<mat-form-field class="history-entry-input">
+						<input
+							[matDatepicker]="startDate"
+							placeholder="Start Date"
+							[value]="timeEntry.start"
+							required
+							#startDateInput
+							matInput
+						/>
+						<mat-datepicker-toggle
+							matSuffix
+							[for]="startDate"
+						></mat-datepicker-toggle>
+						<mat-datepicker #startDate></mat-datepicker>
+					</mat-form-field>
 
-				<mat-form-field class="history-entry-input">
-					<input
-						[matDatepicker]="startDate"
-						placeholder="Start Date"
-						[value]="timeEntry.start"
-						required
-						#startDateInput
-						matInput
-					/>
-					<mat-datepicker-toggle
-						matSuffix
-						[for]="startDate"
-					></mat-datepicker-toggle>
-					<mat-datepicker #startDate></mat-datepicker>
-				</mat-form-field>
+					<mat-form-field class="history-entry-input">
+						<input
+							type="text"
+							[value]="timeEntry.end | date: 'HH:mm'"
+							[type]="'time'"
+							placeholder="End Time"
+							#endTimeInput
+							matInput
+						/>
+					</mat-form-field>
 
-				<mat-form-field class="history-entry-input">
-					<input
-						type="text"
-						[value]="timeEntry.end | date: 'HH:mm'"
-						[type]="'time'"
-						placeholder="End Time"
-						#endTimeInput
-						matInput
-					/>
-				</mat-form-field>
+					<mat-form-field class="history-entry-input">
+						<input
+							[matDatepicker]="endDate"
+							placeholder="End Date"
+							[value]="timeEntry.end"
+							#endDateInput
+							matInput
+						/>
+						<mat-datepicker-toggle
+							matSuffix
+							[for]="endDate"
+						></mat-datepicker-toggle>
+						<mat-datepicker #endDate></mat-datepicker>
+					</mat-form-field>
 
-				<mat-form-field class="history-entry-input">
-					<input
-						[matDatepicker]="endDate"
-						placeholder="End Date"
-						[value]="timeEntry.end"
-						#endDateInput
-						matInput
-					/>
-					<mat-datepicker-toggle
-						matSuffix
-						[for]="endDate"
-					></mat-datepicker-toggle>
-					<mat-datepicker #endDate></mat-datepicker>
-				</mat-form-field>
-
-				<button
-					mat-raised-button
-					class="history-submit"
-					color="primary"
-				>
-					Save
-				</button>
-			</form>
+					<button
+						mat-raised-button
+						class="history-submit"
+						color="primary"
+					>
+						Save
+					</button>
+				</form>
+			</mat-card>
 		</mat-card>
-	</mat-card>
+	</div>
 </div>

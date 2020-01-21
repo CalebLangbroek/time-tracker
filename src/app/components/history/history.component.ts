@@ -2,6 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { TrackerService } from 'src/app/services/tracker.service';
 import { Entry } from '../../models/entry.model';
+import { Subscription } from 'rxjs';
+
+interface DayEntry {
+	duration: number;
+	entries: Entry[];
+}
 
 @Component({
 	selector: 'app-history',
@@ -9,20 +15,27 @@ import { Entry } from '../../models/entry.model';
 	styleUrls: ['./history.component.scss']
 })
 export class HistoryComponent implements OnInit, OnDestroy {
-	entries: Entry[];
-	isLoading = false;
+	private entriesSubscription: Subscription;
+	groupedEntries: DayEntry[];
+	isLoading: boolean;
 
 	constructor(private tracker: TrackerService) {}
 
 	ngOnInit() {
 		this.isLoading = true;
-		this.tracker
-			.getEntries()
-			.then(entries => (this.entries = entries))
-			.finally(() => (this.isLoading = false));
+		this.groupedEntries = [];
+
+		// Setup entry subscription
+		this.entriesSubscription = this.tracker.entriesSubject.subscribe({
+			next: this.groupEntriesByDay.bind(this)
+		});
+
+		this.tracker.getEntries().finally(() => (this.isLoading = false));
 	}
 
-	ngOnDestroy() {}
+	ngOnDestroy() {
+		this.entriesSubscription.unsubscribe();
+	}
 
 	onChangeName(index: number, name: string) {
 		this.tracker.setEntryName(index, name);
@@ -32,8 +45,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
 		this.tracker.deleteEntry(index);
 	}
 
-	onClickEdit(index: number) {
-		this.entries[index].isOpen = !this.entries[index].isOpen;
+	onClickEdit(dayIndex: number, entryIndex: number) {
+		const entry = this.groupedEntries[dayIndex].entries[entryIndex];
+		entry.isOpen = !entry.isOpen;
 	}
 
 	onSaveEntry(
@@ -50,5 +64,42 @@ export class HistoryComponent implements OnInit, OnDestroy {
 			endTime,
 			endDate
 		);
+	}
+
+	/**
+	 * Group entries by day.
+	 * Entries for a day will be an array nested under the day.
+	 * Each day should have the total duration for that day.
+	 * @param entries Entries to group.
+	 */
+	private groupEntriesByDay(entries: Entry[]) {
+		const groupedEntries = [];
+
+		for (let i = 0; i < entries.length; i++) {
+			const entry = entries[i];
+			const dateStr = entry.start.toDateString();
+
+			if (!groupedEntries[dateStr]) {
+				groupedEntries[dateStr] = {
+					dateStr,
+					duration: 0,
+					entries: []
+				};
+			}
+
+			entry.actualIndex = i;
+			groupedEntries[dateStr].duration += entry.duration;
+			groupedEntries[dateStr].entries.push(entry);
+		}
+
+		let i = 0;
+
+		for (const date in groupedEntries) {
+			groupedEntries[i] = groupedEntries[date];
+			delete groupedEntries[date];
+			i++;
+		}
+
+		this.groupedEntries = groupedEntries;
 	}
 }

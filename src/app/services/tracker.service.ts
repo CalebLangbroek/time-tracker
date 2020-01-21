@@ -4,32 +4,46 @@ import { TimerService } from './timer.service';
 import { NotificationService } from './notification.service';
 import { ApiService } from './api.service';
 import { Entry } from '../models/entry.model';
+import { AuthService } from './auth.service';
+import { User } from '../models/user.model';
+import { Subject } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class TrackerService {
 	private startDate: Date;
-	entries: Entry[];
+	private entries: Entry[];
+	entriesSubject = new Subject<Entry[]>();
 
 	constructor(
 		private timer: TimerService,
 		private notification: NotificationService,
-		private api: ApiService
+		private api: ApiService,
+		private auth: AuthService
 	) {
-		// TODO: Subscribe to user and clear entries on signout
+		// Subscribe to the user so we can clear the timer and entries when they sign out
+		this.auth.user.subscribe(this.observeUser.bind(this));
 	}
 
-	getEntries(): Promise<Entry[]> {
-		return new Promise<Entry[]>((resolve, reject) => {
+	/**
+	 * Fetch the entries from the API and emit them once finished
+	 */
+	getEntries(): Promise<void> {
+		return new Promise<void>((resolve, reject) => {
 			if (!this.entries) {
 				this.api.getEntries().subscribe(entries => {
 					this.entries = entries;
 					this.entries.sort(this.compareEntries);
-					resolve(this.entries);
-				});
+					this.entriesSubject.next(this.entries);
+					resolve();
+				}, err => {
+					this.handleAPIError(err);
+					reject();
+				} );
 			} else {
-				resolve(this.entries);
+				this.entriesSubject.next(this.entries);
+				resolve();
 			}
 		});
 	}
@@ -57,7 +71,10 @@ export class TrackerService {
 
 			// Save the entry to the beginning of the array
 			this.entries.unshift(entry);
-		});
+
+			// Emit so any subscribers update
+			this.entriesSubject.next(this.entries);
+		}, this.handleAPIError.bind(this));
 	}
 
 	getTimerDuration(): number {
@@ -78,7 +95,7 @@ export class TrackerService {
 				message: 'Entry saved',
 				type: 'success'
 			});
-		});
+		}, this.handleAPIError.bind(this));
 	}
 
 	/**
@@ -112,10 +129,13 @@ export class TrackerService {
 				message: 'Entry saved',
 				type: 'success'
 			});
-		});
+		}, this.handleAPIError.bind(this));
 
 		// Sort the entries in reverse chronological order
 		this.entries.sort(this.compareEntries);
+
+		// Emit so any subscribers update
+		this.entriesSubject.next(this.entries);
 	}
 
 	/**
@@ -130,8 +150,12 @@ export class TrackerService {
 				message: 'Entry deleted',
 				type: 'success'
 			});
-		});
+		}, this.handleAPIError.bind(this));
+
 		this.entries.splice(index, 1);
+
+		// Emit so any subscribers update
+		this.entriesSubject.next(this.entries);
 	}
 
 	/**
@@ -159,5 +183,31 @@ export class TrackerService {
 		}
 
 		return 0;
+	}
+
+	/**
+	 * Send a new notification if an API error occurs.
+	 * @param err Error message as a string.
+	 */
+	private handleAPIError(err: string) {
+		this.notification.sendNotification({
+			message: err,
+			type: 'danger'
+		});
+	}
+
+	/**
+	 * User observer, so we can clear the timer and entries when the user signs out.
+	 * @param user Current user.
+	 */
+	private observeUser(user: User) {
+		// User is still signed in
+		if (user) {
+			return;
+		}
+
+		// User has been signed out
+		this.timer.stopTimer();
+		this.entries = null;
 	}
 }

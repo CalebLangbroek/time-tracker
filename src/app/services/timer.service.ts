@@ -18,6 +18,11 @@ export class TimerService {
 	}
 
 	stopTimer(): number {
+		// Check that we have a timer started
+		if(!this.intervalSub){
+			return;
+		}
+
 		this.intervalSub.unsubscribe();
 		const duration = this.duration;
 		this.clearTimer();

@@ -3,6 +3,7 @@ export interface Entry {
 	name: string;
 	duration: number;
 	start: Date;
-	end?: Date;
+	end: Date;
 	isOpen?: boolean;
+	actualIndex?: number;
 }
