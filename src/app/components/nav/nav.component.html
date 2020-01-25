@@ -1,15 +1,35 @@
 <div class="nav-container">
-	<div class="nav-close">
+	<div class="nav-close" (click)="onCloseNav()">
 		<mat-icon class="md-light">close</mat-icon>
 	</div>
 	<h1 class="nav-title">Time Tracker</h1>
-	<button
-		mat-raised-button
-		class="nav-signout"
-		color="primary"
-		*ngIf="isSignedIn"
-		(click)="onSignOut()"
-	>
-		Sign Out
-	</button>
+	<div class="nav-signedin-container" *ngIf="isSignedIn">
+		<mat-nav-list>
+			<a mat-list-item color="primary" [routerLink]="['/']">
+				<mat-icon mat-list-icon class="md-light">home</mat-icon>
+				<p mat-line class="nav-text">Home</p>
+			</a>
+			<a mat-list-item color="primary" [routerLink]="['/tags']">
+				<mat-icon mat-list-icon class="md-light">bookmark</mat-icon>
+				<p mat-line class="nav-text">Tags</p>
+			</a>
+		</mat-nav-list>
+		<button
+			mat-raised-button
+			class="nav-signout"
+			color="primary"
+			(click)="onSignOut()"
+		>
+			Sign Out
+		</button>
+	</div>
+	<p>
+		Created by Caleb Langbroek
+	</p>
+	<p>
+		All code is open source and available on
+		<a href="https://github.com/CalebLangbroek/time-tracker">
+			Github
+		</a>
+	</p>
 </div>

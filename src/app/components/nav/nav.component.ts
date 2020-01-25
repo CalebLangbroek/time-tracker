@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 
 import { AuthService } from 'src/app/services/auth.service';
 import { User } from 'src/app/models/user.model';
+import { NavBarService } from 'src/app/services/nav-bar.service';
 
 @Component({
 	selector: 'app-nav',
@@ -13,7 +14,7 @@ export class NavComponent implements OnInit, OnDestroy {
 	isSignedIn: boolean;
 	private userObservable: Subscription;
 
-	constructor(private auth: AuthService) {}
+	constructor(private auth: AuthService, private navbar: NavBarService) {}
 
 	ngOnInit() {
 		// Subscribe to changes to the user so we can update the nav if they sign out
@@ -31,6 +32,11 @@ export class NavComponent implements OnInit, OnDestroy {
 	 */
 	onSignOut() {
 		this.auth.signOut();
+		this.navbar.closeNavBar();
+	}
+
+	onCloseNav() {
+		this.navbar.closeNavBar();
 	}
 
 	/**

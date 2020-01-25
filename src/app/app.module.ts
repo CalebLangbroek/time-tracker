@@ -14,6 +14,7 @@ import { MatNativeDateModule } from '@angular/material';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {MatListModule} from '@angular/material/list';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,6 +26,7 @@ import { DurationPipe } from './pipes/duration.pipe';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 import { AuthComponent } from './components/auth/auth.component';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
+import { TagComponent } from './components/tag/tag.component';
 
 @NgModule({
 	declarations: [
@@ -35,7 +37,8 @@ import { AuthInterceptorService } from './services/auth-interceptor.service';
 		HistoryComponent,
 		DurationPipe,
 		NotificationsComponent,
-		AuthComponent
+		AuthComponent,
+		TagComponent
 	],
 	imports: [
 		BrowserModule,
@@ -53,7 +56,8 @@ import { AuthInterceptorService } from './services/auth-interceptor.service';
 		MatTooltipModule,
 		MatSnackBarModule,
 		HttpClientModule,
-		MatProgressSpinnerModule
+		MatProgressSpinnerModule,
+		MatListModule
 	],
 	providers: [
 		{

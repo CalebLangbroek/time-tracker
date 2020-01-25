@@ -14,6 +14,17 @@ $padding: 10px;
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.nav-text {
+	color: white;
+}
+
+.nav-signedin-container {
+	display: flex;
+	flex-direction: column;
 }
 
 @media (max-width: $bp-tablet) {

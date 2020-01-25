@@ -1,8 +1,7 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener} from '@angular/core';
 
 import { AuthService } from './services/auth.service';
-
-const NAV_BREAK_POINT = 768;
+import { NavBarService } from './services/nav-bar.service';
 
 @Component({
 	selector: 'app-root',
@@ -10,40 +9,35 @@ const NAV_BREAK_POINT = 768;
 	styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-	innerWidth: any;
 	isMobile: boolean;
 	showSideNav: boolean;
 
 	// Add event listener on resize to account for mobile rotation
 	@HostListener('window:resize', [])
 	onResize() {
-		this.innerWidth = window.innerWidth;
-		this.setBoolChecks();
+		this.navbar.setBoolChecks();
 	}
 
-	constructor(private auth: AuthService) { }
+	constructor(private auth: AuthService, private navbar: NavBarService) {}
 
 	ngOnInit() {
-		this.innerWidth = window.innerWidth;
-		this.setBoolChecks();
+		this.isMobile = this.navbar.getIsMobile();
+		this.showSideNav =  this.navbar.getShowSideNav();
+
+		// Setup subscriptions to navbar
+		this.navbar.showSideNavSubject.subscribe({
+			next: showSideNav => this.showSideNav = showSideNav
+		});
+
+		this.navbar.isMobileSubject.subscribe({
+			next: isMobile => this.isMobile = isMobile
+		});
+
 		this.auth.signInFromLocalStorage();
 	}
 
-	/**
-	 * Set boolean variables.
-	 */
-	setBoolChecks() {
-		if (this.innerWidth <= NAV_BREAK_POINT) {
-			this.isMobile = true;
-			this.showSideNav = false;
-		} else {
-			this.isMobile = false;
-			this.showSideNav = true;
-		}
-	}
-
 	onClickNavToggle() {
-		this.showSideNav = !this.showSideNav;
+		this.navbar.openNavBar();
 	}
 
 	/**
