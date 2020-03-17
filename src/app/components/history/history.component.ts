@@ -15,9 +15,9 @@ interface DayEntry {
 	styleUrls: ['./history.component.scss']
 })
 export class HistoryComponent implements OnInit, OnDestroy {
-	private entriesSubscription: Subscription;
 	groupedEntries: DayEntry[];
 	isLoading: boolean;
+	private entriesSub: Subscription;
 
 	constructor(private tracker: TrackerService) {}
 
@@ -26,7 +26,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 		this.groupedEntries = [];
 
 		// Setup entry subscription
-		this.entriesSubscription = this.tracker.entriesSubject.subscribe({
+		this.entriesSub = this.tracker.entriesSubject.subscribe({
 			next: this.groupEntriesByDay.bind(this)
 		});
 
@@ -34,7 +34,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
-		this.entriesSubscription.unsubscribe();
+		this.entriesSub.unsubscribe();
 	}
 
 	onChangeName(index: number, name: string) {

@@ -12,19 +12,19 @@ import { NavBarService } from 'src/app/services/nav-bar.service';
 })
 export class NavComponent implements OnInit, OnDestroy {
 	isSignedIn: boolean;
-	private userObservable: Subscription;
+	private userSub: Subscription;
 
 	constructor(private auth: AuthService, private navbar: NavBarService) {}
 
 	ngOnInit() {
 		// Subscribe to changes to the user so we can update the nav if they sign out
-		this.auth.user.subscribe({
+		this.userSub = this.auth.user.subscribe({
 			next: this.setSignedIn.bind(this)
 		});
 	}
 
 	ngOnDestroy() {
-		this.userObservable.unsubscribe();
+		this.userSub.unsubscribe();
 	}
 
 	/**
@@ -32,7 +32,10 @@ export class NavComponent implements OnInit, OnDestroy {
 	 */
 	onSignOut() {
 		this.auth.signOut();
-		this.navbar.closeNavBar();
+
+		if (this.navbar.getIsMobile()) {
+			this.navbar.closeNavBar();
+		}
 	}
 
 	onCloseNav() {

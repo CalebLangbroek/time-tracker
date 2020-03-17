@@ -1,0 +1,29 @@
+<mat-card>
+	<div class="tag-edit-card">
+		<mat-form-field class="tag-edit-name">
+			<input
+				type="text"
+				placeholder="Name"
+				matInput
+				name="name"
+				#tagName
+			/>
+		</mat-form-field>
+		<button
+			mat-raised-button
+			color="primary"
+			(click)="onSave(tagName.value)"
+			class="tag-edit-button"
+		>
+			Save New Tag
+		</button>
+		<button
+			mat-raised-button
+			color="warn"
+			(click)="onCancel()"
+			class="tag-edit-button"
+		>
+			Cancel
+		</button>
+	</div>
+</mat-card>

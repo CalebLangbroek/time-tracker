@@ -27,6 +27,8 @@ import { NotificationsComponent } from './components/notifications/notifications
 import { AuthComponent } from './components/auth/auth.component';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
 import { TagComponent } from './components/tag/tag.component';
+import { TagEditComponent } from './components/tag-edit/tag-edit.component';
+import { TagListComponent } from './components/tag-list/tag-list.component';
 
 @NgModule({
 	declarations: [
@@ -38,7 +40,9 @@ import { TagComponent } from './components/tag/tag.component';
 		DurationPipe,
 		NotificationsComponent,
 		AuthComponent,
-		TagComponent
+		TagComponent,
+		TagEditComponent,
+		TagListComponent
 	],
 	imports: [
 		BrowserModule,

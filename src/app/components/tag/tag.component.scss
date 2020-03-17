@@ -1,0 +1,12 @@
+$padding: 10px;
+
+.tag-container {
+    height: 100%;
+    padding: $padding;
+
+    .tag-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}

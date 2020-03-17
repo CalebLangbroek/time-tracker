@@ -157,7 +157,6 @@ export class AuthService {
 
 		this.user.next(user);
 		localStorage.setItem(USER_DATA_KEY, JSON.stringify(user));
-		this.router.navigate(['/']);
 	}
 
 	/**

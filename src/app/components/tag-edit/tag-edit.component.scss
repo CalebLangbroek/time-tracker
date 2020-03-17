@@ -1,0 +1,19 @@
+// Sizing
+$spacing: 5px;
+
+.tag-edit-card {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+	padding: $spacing;
+
+	.tag-edit-name {
+		flex: 1;
+	}
+
+	.tag-edit-button,
+	.tag-edit-name {
+		margin: $spacing;
+	}
+}

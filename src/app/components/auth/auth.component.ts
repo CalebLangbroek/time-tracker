@@ -56,18 +56,19 @@ export class AuthComponent implements OnInit {
 		}
 
 		authPromise
-			.then(successMessage =>
+			.then(successMessage => {
 				this.notification.sendNotification({
 					message: successMessage,
 					type: 'success'
-				})
-			)
+				});
+				this.router.navigate(['/']);
+			})
 			.catch(errorMessage =>
 				this.notification.sendNotification({
 					message: errorMessage,
 					type: 'danger'
 				})
 			)
-			.finally(() => this.isLoading = false);
+			.finally(() => (this.isLoading = false));
 	}
 }
