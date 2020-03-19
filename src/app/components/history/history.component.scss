@@ -18,12 +18,13 @@ $history-padding: 46px;
 
 	.history-entry {
 		margin: 10px;
-		
-		&:hover, &:active {
+
+		&:hover,
+		&:active {
 			background-color: darken($cardbg, 5%);
 		}
 
-		.history-main{
+		.history-main {
 			display: flex;
 			align-items: center;
 		}
@@ -32,11 +33,14 @@ $history-padding: 46px;
 			flex: 1;
 		}
 
-		.history-entry-input, .history-entry-duration, .history-entry-delete {
+		.history-entry-input,
+		.history-entry-duration,
+		.history-entry-delete,
+		.history-entry-tag {
 			padding: 0 $padding;
 		}
 
-		.history-edit{
+		.history-edit {
 			background: darken($cardbg, 10%);
 		}
 

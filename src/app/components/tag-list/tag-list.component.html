@@ -1,4 +1,7 @@
 <div class="tag-list-container">
+	<mat-form-field class="tag-list-filter">
+		<input type="text" placeholder="Filter" matInput [(ngModel)]="filter" />
+	</mat-form-field>
 	<table
 		mat-table
 		[dataSource]="tagService.tagsSubject"
@@ -12,9 +15,24 @@
 		<ng-container matColumnDef="color">
 			<th mat-header-cell *matHeaderCellDef>Color</th>
 			<td mat-cell *matCellDef="let tag">
-				<mat-icon [ngStyle]="{ color: tag.color }">
+				<mat-icon
+					matTooltip="{{ tag.color }}"
+					[ngStyle]="{ color: tag.color }"
+				>
 					<span>lens</span>
 				</mat-icon>
+			</td>
+		</ng-container>
+
+		<ng-container matColumnDef="delete">
+			<th mat-header-cell *matHeaderCellDef>Delete</th>
+			<td mat-cell *matCellDef="let tag">
+				<mat-icon
+					matTooltip="Click to delete"
+					class="md-red"
+					(click)="onClickDelete(tag.id)"
+					>delete</mat-icon
+				>
 			</td>
 		</ng-container>
 

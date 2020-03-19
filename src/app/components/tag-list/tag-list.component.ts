@@ -9,11 +9,19 @@ import { TagService } from 'src/app/services/tag.service';
 })
 export class TagListComponent implements OnInit {
 	tagsLength: number;
-	displayedColumns: string[] = ['name', 'color'];
+	filter: string;
+	displayedColumns: string[] = ['name', 'color', 'delete'];
 
 	constructor(private tagService: TagService) {}
 
 	ngOnInit() {
-		this.tagsLength  = this.tagService.tagsSubject.getValue().length;
+		this.filter = '';
+
+		// TODO: Add loading spinner, fix tags length to update with observable
+		this.tagsLength = this.tagService.tagsSubject.getValue().length;
+	}
+
+	onClickDelete(tagID: string) {
+		this.tagService.deleteTag(tagID);
 	}
 }

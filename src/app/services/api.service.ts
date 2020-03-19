@@ -6,6 +6,7 @@ import { map, catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 import { Entry } from '../models/entry.model';
+import { Tag } from '../models/tag.model';
 
 const PROJECT_URL = environment.FIREBASE_PROJECT_URL;
 const ENTRY_LIMIT = 50;
@@ -15,6 +16,7 @@ interface ResponseEntry {
 	name: string;
 	start: Date;
 	end: Date;
+	tag?: Tag;
 }
 
 @Injectable({
@@ -72,7 +74,23 @@ export class ApiService {
 		const resEntry = this.clearEntryFields(entry);
 
 		return this.http
-			.patch(`${PROJECT_URL}/entries/${user.id}/${entryId}.json`, resEntry)
+			.patch(
+				`${PROJECT_URL}/entries/${user.id}/${entryId}.json`,
+				resEntry
+			)
+			.pipe(catchError(this.handleError.bind(this)));
+	}
+
+	/**
+	 * Update an entry in the database.
+	 * @param entry New entry values.
+	 */
+	putEntryTag(entry: Entry, tag: Tag) {
+		const user = this.auth.user.getValue();
+		const entryId = entry.id;
+
+		return this.http
+			.patch(`${PROJECT_URL}/entries/${user.id}/${entryId}/tag.json`, tag)
 			.pipe(catchError(this.handleError.bind(this)));
 	}
 
@@ -80,7 +98,7 @@ export class ApiService {
 	 * Create a new entry.
 	 * @param entry New entry to create.
 	 */
-	setEntry(entry: Entry) {
+	setEntry(entry: Entry): Observable<{ name: string }> {
 		const user = this.auth.user.getValue();
 
 		// Only keep fields we are saving
@@ -93,13 +111,21 @@ export class ApiService {
 
 	/**
 	 * Delete a specific entry from the database.
-	 * @param entryId Id of the entry to delete.
+	 * @param entryID ID of the entry to delete.
 	 */
-	deleteEntry(entryId: string) {
+	deleteEntry(entryID: string) {
 		const user = this.auth.user.getValue();
 
 		return this.http
-			.delete(`${PROJECT_URL}/entries/${user.id}/${entryId}.json`)
+			.delete(`${PROJECT_URL}/entries/${user.id}/${entryID}.json`)
+			.pipe(catchError(this.handleError.bind(this)));
+	}
+
+	deleteEntryTag(entryID: string) {
+		const user = this.auth.user.getValue();
+
+		return this.http
+			.delete(`${PROJECT_URL}/entries/${user.id}/${entryID}/tag.json`)
 			.pipe(catchError(this.handleError.bind(this)));
 	}
 
@@ -121,17 +147,18 @@ export class ApiService {
 	 * @param entryId Id of the entry response.
 	 * @param entry Entry data.
 	 */
-	private convertToEntry(entryId: string, resEntry: ResponseEntry): Entry {
+	private convertToEntry(entryID: string, resEntry: ResponseEntry): Entry {
 		const start = new Date(resEntry.start);
 		const end = new Date(resEntry.end);
 		const duration = (end.getTime() - start.getTime()) / 1000;
 
 		const entry: Entry = {
-			id: entryId,
+			id: entryID,
 			name: resEntry.name,
 			duration,
 			start,
-			end
+			end,
+			tag: resEntry.tag
 		};
 
 		return entry;

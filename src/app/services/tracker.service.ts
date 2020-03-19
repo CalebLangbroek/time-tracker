@@ -7,6 +7,7 @@ import { ApiService } from './api.service';
 import { AuthService } from './auth.service';
 import { Entry } from '../models/entry.model';
 import { User } from '../models/user.model';
+import { Tag } from '../models/tag.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -34,15 +35,18 @@ export class TrackerService {
 	getEntries(): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
 			if (!this.entries) {
-				this.api.getEntries().subscribe(entries => {
-					this.entries = entries;
-					this.entries.sort(this.compareEntries);
-					this.entriesSubject.next(this.entries);
-					resolve();
-				}, err => {
-					this.handleAPIError(err);
-					reject();
-				} );
+				this.api.getEntries().subscribe(
+					entries => {
+						this.entries = entries;
+						this.entries.sort(this.compareEntries);
+						this.entriesSubject.next(this.entries);
+						resolve();
+					},
+					err => {
+						this.handleAPIError(err);
+						reject();
+					}
+				);
 			} else {
 				this.entriesSubject.next(this.entries);
 				resolve();
@@ -68,7 +72,7 @@ export class TrackerService {
 			isOpen: false
 		};
 
-		this.api.setEntry(entry).subscribe((resEntry: { name: string }) => {
+		this.api.setEntry(entry).subscribe(resEntry => {
 			entry.id = resEntry.name;
 
 			// Save the entry to the beginning of the array
@@ -96,6 +100,23 @@ export class TrackerService {
 		this.entries[index].name = name;
 
 		this.api.putEntry(this.entries[index]).subscribe(() => {
+			// Send notification
+			this.notification.sendNotification({
+				message: 'Entry saved',
+				type: 'success'
+			});
+		}, this.handleAPIError.bind(this));
+	}
+
+	/**
+	 * Set the tag of an entry at a given index.
+	 * @param index Index of the entry to set.
+	 * @param tag Tag to set.
+	 */
+	setEntryTag(index: number, tag: Tag) {
+		this.entries[index].tag = tag;
+
+		this.api.putEntryTag(this.entries[index], tag).subscribe(() => {
 			// Send notification
 			this.notification.sendNotification({
 				message: 'Entry saved',
@@ -162,6 +183,21 @@ export class TrackerService {
 
 		// Emit so any subscribers update
 		this.entriesSubject.next(this.entries);
+	}
+
+	/**
+	 * Remove an entry from the array at a given index.
+	 * The re-sort the array.
+	 * @param index Index of the entry to delete
+	 */
+	deleteEntryTag(index: number) {
+		this.api.deleteEntryTag(this.entries[index].id).subscribe(() => {
+			// Send notification
+			this.notification.sendNotification({
+				message: 'Entry deleted',
+				type: 'success'
+			});
+		}, this.handleAPIError.bind(this));
 	}
 
 	/**

@@ -16,6 +16,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
+import { MatAutocompleteModule } from '@angular/material/autocomplete'
+import { MatChipsModule } from '@angular/material/chips'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -63,7 +65,9 @@ import { TagListComponent } from './components/tag-list/tag-list.component';
 		HttpClientModule,
 		MatProgressSpinnerModule,
 		MatListModule,
-		MatTableModule
+		MatTableModule,
+		MatAutocompleteModule,
+		MatChipsModule
 	],
 	providers: [
 		{

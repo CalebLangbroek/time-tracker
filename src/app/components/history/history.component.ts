@@ -1,8 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
+import { Subscription } from 'rxjs';
+
 import { TrackerService } from 'src/app/services/tracker.service';
 import { Entry } from '../../models/entry.model';
-import { Subscription } from 'rxjs';
+import { Tag } from 'src/app/models/tag.model';
+import { TagService } from 'src/app/services/tag.service';
 
 interface DayEntry {
 	duration: number;
@@ -15,11 +18,16 @@ interface DayEntry {
 	styleUrls: ['./history.component.scss']
 })
 export class HistoryComponent implements OnInit, OnDestroy {
+	private entriesSub: Subscription;
+	private tagsSub: Subscription;
 	groupedEntries: DayEntry[];
 	isLoading: boolean;
-	private entriesSub: Subscription;
+	tags: Tag[];
 
-	constructor(private tracker: TrackerService) {}
+	constructor(
+		private tracker: TrackerService,
+		private tagService: TagService
+	) {}
 
 	ngOnInit() {
 		this.isLoading = true;
@@ -31,14 +39,34 @@ export class HistoryComponent implements OnInit, OnDestroy {
 		});
 
 		this.tracker.getEntries().finally(() => (this.isLoading = false));
+
+		// Get tags
+		this.tags = this.tagService.tagsSubject.getValue();
+
+		this.tagsSub = this.tagService.tagsSubject.subscribe(
+			tags => (this.tags = tags)
+		);
 	}
 
 	ngOnDestroy() {
 		this.entriesSub.unsubscribe();
+		this.tagsSub.unsubscribe();
 	}
 
 	onChangeName(index: number, name: string) {
 		this.tracker.setEntryName(index, name);
+	}
+
+	onChangeTag(index: number, tag: Tag, dayIndex: number, entryIndex: number) {
+		const entry = this.groupedEntries[dayIndex].entries[entryIndex];
+		entry.showTagEdit = false;
+		this.tracker.setEntryTag(index, tag);
+	}
+
+	onClickTagEdit(index: number, dayIndex: number, entryIndex: number) {
+		const entry = this.groupedEntries[dayIndex].entries[entryIndex];
+		entry.showTagEdit = true;
+		this.tracker.deleteEntryTag(index);
 	}
 
 	onClickDelete(index: number) {
@@ -64,6 +92,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
 			endTime,
 			endDate
 		);
+	}
+
+	displayWithTag(tag: Tag) {
+		return tag && tag.name ? tag.name : '';
 	}
 
 	/**
