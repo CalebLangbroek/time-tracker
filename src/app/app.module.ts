@@ -14,7 +14,8 @@ import { MatNativeDateModule } from '@angular/material';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import {MatListModule} from '@angular/material/list';
+import { MatListModule } from '@angular/material/list';
+import { MatTableModule } from '@angular/material/table';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -61,7 +62,8 @@ import { TagListComponent } from './components/tag-list/tag-list.component';
 		MatSnackBarModule,
 		HttpClientModule,
 		MatProgressSpinnerModule,
-		MatListModule
+		MatListModule,
+		MatTableModule
 	],
 	providers: [
 		{

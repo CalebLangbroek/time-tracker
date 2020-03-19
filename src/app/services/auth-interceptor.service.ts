@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import {
 	HttpInterceptor,
 	HttpRequest,
-	HttpHandler,
-	HttpParams
+	HttpHandler
 } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { take, exhaustMap } from 'rxjs/operators';
@@ -27,8 +26,9 @@ export class AuthInterceptorService implements HttpInterceptor {
 					return next.handle(req);
 				}
 
+				// Add auth request param
 				const modifiedReq = req.clone({
-					params: new HttpParams().set('auth', user.getToken())
+					params: req.params.set('auth', user.getToken())
 				});
 
 				return next.handle(modifiedReq);

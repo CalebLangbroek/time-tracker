@@ -7,12 +7,20 @@ import { TagService } from 'src/app/services/tag.service';
 	styleUrls: ['./tag-edit.component.scss']
 })
 export class TagEditComponent implements OnInit {
+	tagName: string;
+	tagColor: string;
+
 	constructor(private tagService: TagService) {}
 
-	ngOnInit() {}
+	ngOnInit() {
+		this.tagName = '';
+		this.tagColor = '';
+	}
 
-	onSave(name: string) {
-		console.log(name);
+	onSave() {
+		this.tagService.setTag(this.tagName, this.tagColor);
+
+		this.tagColor = this.tagName = '';
 	}
 
 	onCancel() {

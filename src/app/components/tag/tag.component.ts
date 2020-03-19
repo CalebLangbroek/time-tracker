@@ -9,12 +9,14 @@ import { TagService } from 'src/app/services/tag.service';
 	styleUrls: ['./tag.component.scss']
 })
 export class TagComponent implements OnInit {
-	isEditVis = false;
+	isEditVis: boolean;
 	private isEditVisSub: Subscription;
 
 	constructor(private tagService: TagService) {}
 
 	ngOnInit() {
+		this.isEditVis = this.tagService.isEditVisSubject.getValue();
+
 		// Subscribe to opening and closing of edit component
 		this.isEditVisSub = this.tagService.isEditVisSubject.subscribe(
 			isEditVis => (this.isEditVis = isEditVis)

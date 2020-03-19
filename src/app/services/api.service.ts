@@ -8,6 +8,14 @@ import { environment } from '../../environments/environment';
 import { Entry } from '../models/entry.model';
 
 const PROJECT_URL = environment.FIREBASE_PROJECT_URL;
+const ENTRY_LIMIT = 50;
+
+// Entry as stored on the server
+interface ResponseEntry {
+	name: string;
+	start: Date;
+	end: Date;
+}
 
 @Injectable({
 	providedIn: 'root'
@@ -23,16 +31,21 @@ export class ApiService {
 		// Get the user
 		const user = this.auth.user.getValue();
 
-		return this.http.get(`${PROJECT_URL}/entries/${user.id}.json`).pipe(
-			map(res => {
-				const result: Entry[] = [];
-				for (const key in res) {
-					result.push(this.convertToEntry(key, res[key]));
-				}
-				return result;
-			}),
-			catchError(this.handleError.bind(this))
-		);
+		// Add limitToLast to only get the newest entries
+		return this.http
+			.get(
+				`${PROJECT_URL}/entries/${user.id}.json?orderBy="start"&limitToLast=${ENTRY_LIMIT}`
+			)
+			.pipe(
+				map(res => {
+					const result: Entry[] = [];
+					for (const key in res) {
+						result.push(this.convertToEntry(key, res[key]));
+					}
+					return result;
+				}),
+				catchError(this.handleError.bind(this))
+			);
 	}
 
 	/**
@@ -56,10 +69,10 @@ export class ApiService {
 		const entryId = entry.id;
 
 		// Only keep fields we are saving
-		entry = this.clearEntryFields(entry);
+		const resEntry = this.clearEntryFields(entry);
 
 		return this.http
-			.patch(`${PROJECT_URL}/entries/${user.id}/${entryId}.json`, entry)
+			.patch(`${PROJECT_URL}/entries/${user.id}/${entryId}.json`, resEntry)
 			.pipe(catchError(this.handleError.bind(this)));
 	}
 
@@ -71,10 +84,10 @@ export class ApiService {
 		const user = this.auth.user.getValue();
 
 		// Only keep fields we are saving
-		entry = this.clearEntryFields(entry);
+		const resEntry = this.clearEntryFields(entry);
 
 		return this.http
-			.post(`${PROJECT_URL}/entries/${user.id}.json`, entry)
+			.post(`${PROJECT_URL}/entries/${user.id}.json`, resEntry)
 			.pipe(catchError(this.handleError.bind(this)));
 	}
 
@@ -94,10 +107,9 @@ export class ApiService {
 	 * Only keep the fields that are being saved in the database.
 	 * @param entry Entry who's fields need clearing.
 	 */
-	private clearEntryFields(entry: Entry): Entry {
+	private clearEntryFields(entry: Entry): ResponseEntry {
 		return {
 			name: entry.name,
-			duration: entry.duration,
 			start: entry.start,
 			end: entry.end
 		};
@@ -109,10 +121,19 @@ export class ApiService {
 	 * @param entryId Id of the entry response.
 	 * @param entry Entry data.
 	 */
-	private convertToEntry(entryId: string, entry: Entry): Entry {
-		entry.id = entryId;
-		entry.start = new Date(entry.start);
-		entry.end = new Date(entry.end);
+	private convertToEntry(entryId: string, resEntry: ResponseEntry): Entry {
+		const start = new Date(resEntry.start);
+		const end = new Date(resEntry.end);
+		const duration = (end.getTime() - start.getTime()) / 1000;
+
+		const entry: Entry = {
+			id: entryId,
+			name: resEntry.name,
+			duration,
+			start,
+			end
+		};
+
 		return entry;
 	}
 

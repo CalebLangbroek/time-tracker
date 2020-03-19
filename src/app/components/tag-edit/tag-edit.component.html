@@ -1,18 +1,25 @@
-<mat-card>
+<mat-card class="tag-edit-container">
 	<div class="tag-edit-card">
 		<mat-form-field class="tag-edit-name">
 			<input
 				type="text"
 				placeholder="Name"
 				matInput
-				name="name"
-				#tagName
+				[(ngModel)]="tagName"
+			/>
+		</mat-form-field>
+		<mat-form-field class="tag-edit-name">
+			<input
+				type="color"
+				placeholder="Color"
+				matInput
+				[(ngModel)]="tagColor"
 			/>
 		</mat-form-field>
 		<button
 			mat-raised-button
 			color="primary"
-			(click)="onSave(tagName.value)"
+			(click)="onSave()"
 			class="tag-edit-button"
 		>
 			Save New Tag

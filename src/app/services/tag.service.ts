@@ -1,18 +1,27 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
+
+import { Tag } from '../models/tag.model';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class TagService {
-	isEditVisSubject = new Subject<boolean>();
+	private tags: Tag[];
+	tagsSubject = new BehaviorSubject<Tag[]>([]);
+	isEditVisSubject = new BehaviorSubject<boolean>(false);
 
 	constructor() {
-		this.isEditVisSubject.next(false);
+		this.tags = [];
+		this.tagsSubject.next(this.tags);
+	}
+
+	getTags() {
+
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	onShowEdit() {
 		this.isEditVisSubject.next(true);
@@ -22,11 +31,22 @@ export class TagService {
 		this.isEditVisSubject.next(false);
 	}
 
-	setTag() {
+	setTag(name: string, color: string) {
+		const newTag: Tag = {
+			name,
+			color
+		};
 
+		this.tags.unshift(newTag);
+		this.tagsSubject.next(this.tags);
 	}
 
-	setTagName() {
+	setTagName(index: number, name: string) {}
 
+	deleteTag(index: number) {
+		// Remove from array
+
+
+		// Post
 	}
 }
