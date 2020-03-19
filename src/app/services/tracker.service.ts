@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 import { TimerService } from './timer.service';
 import { NotificationService } from './notification.service';
 import { ApiService } from './api.service';
-import { Entry } from '../models/entry.model';
 import { AuthService } from './auth.service';
+import { Entry } from '../models/entry.model';
 import { User } from '../models/user.model';
-import { Subject } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'
@@ -15,6 +15,7 @@ export class TrackerService {
 	private startDate: Date;
 	private entries: Entry[];
 	entriesSubject = new Subject<Entry[]>();
+	trackerName: string;
 
 	constructor(
 		private timer: TimerService,
@@ -24,6 +25,7 @@ export class TrackerService {
 	) {
 		// Subscribe to the user so we can clear the timer and entries when they sign out
 		this.auth.user.subscribe(this.observeUser.bind(this));
+		this.trackerName = '';
 	}
 
 	/**
@@ -75,6 +77,10 @@ export class TrackerService {
 			// Emit so any subscribers update
 			this.entriesSubject.next(this.entries);
 		}, this.handleAPIError.bind(this));
+	}
+
+	getTimerIsStarted(): boolean {
+		return this.timer.getIsStarted();
 	}
 
 	getTimerDuration(): number {

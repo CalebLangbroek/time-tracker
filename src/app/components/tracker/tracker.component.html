@@ -1,9 +1,9 @@
 <div class="tracker-container">
 	<mat-card class="tracker-card">
 		<div class="tracker-button">
-			<mat-icon class="md-48" [ngClass]="{'md-green': !started, 'md-red': started}">
-				<span *ngIf="!started" (click)="onStart()">play_circle_fill</span>
-				<span *ngIf="started" (click)="onStop()">stop</span>
+			<mat-icon class="md-48" [ngClass]="{'md-green': !isStarted, 'md-red': isStarted}">
+				<span *ngIf="!isStarted" (click)="onStart()">play_circle_fill</span>
+				<span *ngIf="isStarted" (click)="onStop()">stop</span>
 			</mat-icon>
 		</div>
 		<div class="tracker-name">

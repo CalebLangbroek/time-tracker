@@ -8,24 +8,28 @@ import { interval, Subscription } from 'rxjs';
 export class TimerService {
 	private intervalSub: Subscription;
 	private duration: number;
+	private isStarted: boolean;
 
 	constructor() {
 		this.duration = 0;
+		this.isStarted = false;
 	}
 
 	startTimer(): void {
+		this.isStarted = true;
 		this.intervalSub = interval(1000).subscribe(() => this.duration++);
 	}
 
 	stopTimer(): number {
 		// Check that we have a timer started
-		if(!this.intervalSub){
+		if (!this.isStarted) {
 			return;
 		}
 
+		this.isStarted = false;
 		this.intervalSub.unsubscribe();
 		const duration = this.duration;
-		this.clearTimer();
+		this.duration = 0;
 		return duration;
 	}
 
@@ -33,7 +37,7 @@ export class TimerService {
 		return this.duration;
 	}
 
-	private clearTimer(): void {
-		this.duration = 0;
+	getIsStarted(): boolean {
+		return this.isStarted;
 	}
 }
