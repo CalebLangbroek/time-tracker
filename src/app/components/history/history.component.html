@@ -30,7 +30,7 @@
 				<div class="history-entry-tag">
 					<mat-chip-list
 						class="history-entry-tag-badge"
-						*ngIf="timeEntry.tag && !timeEntry.showTagEdit"
+						*ngIf="timeEntry.tag"
 					>
 						<mat-chip
 							matTooltip="Click to remove"
@@ -38,34 +38,23 @@
 								color: 'white',
 								'background-color': timeEntry.tag.color
 							}"
-							(click)="
-								onClickTagEdit(
-									timeEntry.actualIndex,
-									dayIndex,
-									entryIndex
-								)
-							"
+							(click)="onClickTagBadge(timeEntry.actualIndex)"
 						>
 							{{ timeEntry.tag.name }}
 						</mat-chip>
 					</mat-chip-list>
 
-					<mat-form-field
-						*ngIf="!timeEntry.tag || timeEntry.showTagEdit"
-					>
+					<mat-form-field *ngIf="!timeEntry.tag">
 						<input
 							type="text"
 							placeholder="Tag"
 							(ngModelChange)="
-								onChangeTagEdit(
-									timeEntry.actualIndex,
-									dayIndex,
-									entryIndex,
-									$event
-								)
+								onChangeTagEdit(timeEntry.actualIndex, $event)
 							"
+							(focus)="onFocusTagEdit(timeEntryTag.value)"
 							[ngModel]="currentTag"
 							[matAutocomplete]="timeEntryTagAuto"
+							#timeEntryTag
 							matInput
 						/>
 						<mat-autocomplete #timeEntryTagAuto="matAutocomplete">

@@ -9,5 +9,4 @@ export interface Entry {
 	tag?: Tag;
 	isOpen?: boolean;
 	actualIndex?: number;
-	showTagEdit?: boolean
 }

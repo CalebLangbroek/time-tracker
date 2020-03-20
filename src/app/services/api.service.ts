@@ -9,7 +9,7 @@ import { Entry } from '../models/entry.model';
 import { Tag } from '../models/tag.model';
 
 const PROJECT_URL = environment.FIREBASE_PROJECT_URL;
-const ENTRY_LIMIT = 50;
+const ENTRY_LIMIT = 25;
 
 // Entry as stored on the server
 interface ResponseEntry {

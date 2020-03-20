@@ -60,24 +60,21 @@ export class HistoryComponent implements OnInit, OnDestroy {
 		this.tracker.setEntryName(index, name);
 	}
 
-	onChangeTagEdit(
-		index: number,
-		dayIndex: number,
-		entryIndex: number,
-		event: any
-	) {
+	onChangeTagEdit(index: number, event: any) {
 		if (event.id) {
 			// Have a tag, should save it
-			this.saveTag(index, entryIndex, dayIndex, event as Tag);
+			this.saveTag(index, event as Tag);
 		} else {
 			// Otherwise filter the list of tags
 			this.filterTagList(event as string);
 		}
 	}
 
-	onClickTagEdit(index: number, dayIndex: number, entryIndex: number) {
-		const entry = this.groupedEntries[dayIndex].entries[entryIndex];
-		entry.showTagEdit = true;
+	onFocusTagEdit(input: string) {
+		this.filterTagList(input);
+	}
+
+	onClickTagBadge(index: number) {
 		this.tracker.deleteEntryTag(index);
 	}
 
@@ -109,19 +106,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
 	/**
 	 * Set the tag for an entry.
 	 *
-	 * @param index Index in the tracker service's entry array
-	 * @param dayIndex Day index.
-	 * @param entryIndex Entry index.
+	 * @param index Index in the tracker service's entry array.
 	 * @param tag Tag to add to entry.
 	 */
-	private saveTag(
-		index: number,
-		dayIndex: number,
-		entryIndex: number,
-		tag: Tag
-	) {
-		const entry = this.groupedEntries[dayIndex].entries[entryIndex];
-		entry.showTagEdit = false;
+	private saveTag(index: number, tag: Tag) {
 		this.tracker.setEntryTag(index, tag);
 	}
 

@@ -32,6 +32,8 @@ $history-padding: 46px;
 	&-form {
 		display: grid;
 		align-items: center;
+		row-gap: 5px;
+		column-gap: 10px;
 	}
 
 	&-entry {

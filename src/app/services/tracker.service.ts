@@ -114,15 +114,18 @@ export class TrackerService {
 	 * @param tag Tag to set.
 	 */
 	setEntryTag(index: number, tag: Tag) {
-		this.entries[index].tag = tag;
-
 		this.api.putEntryTag(this.entries[index], tag).subscribe(() => {
 			// Send notification
 			this.notification.sendNotification({
-				message: 'Entry saved',
+				message: 'Tag saved',
 				type: 'success'
 			});
 		}, this.handleAPIError.bind(this));
+
+		this.entries[index].tag = tag;
+
+		// Emit so any subscribers update
+		this.entriesSubject.next(this.entries);
 	}
 
 	/**
@@ -194,10 +197,15 @@ export class TrackerService {
 		this.api.deleteEntryTag(this.entries[index].id).subscribe(() => {
 			// Send notification
 			this.notification.sendNotification({
-				message: 'Entry deleted',
+				message: 'Tag deleted',
 				type: 'success'
 			});
 		}, this.handleAPIError.bind(this));
+
+		this.entries[index].tag = undefined;
+
+		// Emit so any subscribers update
+		this.entriesSubject.next(this.entries);
 	}
 
 	/**
