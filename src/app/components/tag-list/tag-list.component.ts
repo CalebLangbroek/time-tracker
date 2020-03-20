@@ -12,7 +12,7 @@ export class TagListComponent implements OnInit {
 	filter: string;
 	displayedColumns: string[] = ['name', 'color', 'delete'];
 
-	constructor(private tagService: TagService) {}
+	constructor(public tagService: TagService) {}
 
 	ngOnInit() {
 		this.filter = '';

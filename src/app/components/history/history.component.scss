@@ -1,22 +1,40 @@
-// Screen sizes
-$bp-phone: 576px;
-$bp-tablet: 768px;
-$bp-laptop: 992px;
-$bp-desktop: 1200px;
+@import "../../scss/breakpoints";
 
 // Colors
 $cardbg: rgb(250, 250, 250);
-$blue: rgb(87, 168, 255);
 $green: rgb(40, 167, 69);
 
 // Sizing
 $padding: 10px;
 $history-padding: 46px;
 
-.history-container {
-	padding: $padding;
+.history {
+	&-container {
+		padding: $padding;
+	}
 
-	.history-entry {
+	&-main {
+		display: grid;
+		align-items: center;
+		row-gap: 5px;
+		column-gap: 10px;
+	}
+
+	&-edit {
+		background: darken($cardbg, 10%);
+	}
+
+	&-submit {
+		background-color: $green;
+		width: fit-content;
+	}
+
+	&-form {
+		display: grid;
+		align-items: center;
+	}
+
+	&-entry {
 		margin: 10px;
 
 		&:hover,
@@ -24,39 +42,52 @@ $history-padding: 46px;
 			background-color: darken($cardbg, 5%);
 		}
 
-		.history-main {
-			display: flex;
-			align-items: center;
+		&-name {
+			grid-area: name;
 		}
 
-		.history-entry-name {
-			flex: 1;
+		&-tag {
+			grid-area: tag;
+
+			&-badge {
+				max-width: 20%;
+			}
 		}
 
-		.history-entry-input,
-		.history-entry-duration,
-		.history-entry-delete,
-		.history-entry-tag {
-			padding: 0 $padding;
+		&-duration {
+			grid-area: duration;
 		}
 
-		.history-edit {
-			background: darken($cardbg, 10%);
+		&-delete {
+			grid-area: delete;
 		}
 
-		.history-submit {
-			background-color: $green;
-			width: fit-content;
-		}
-
-		.history-form {
-			display: grid;
-			align-items: center;
+		&-edit {
+			grid-area: edit;
 		}
 	}
 }
 
+@mixin history-main-1-row {
+	grid-template-columns: 1fr repeat(4, auto);
+	grid-template-rows: repeat(1, auto);
+	grid-template-areas: "name tag duration delete edit";
+}
+
+@mixin history-main-4-row {
+	margin-bottom: 5px;
+	grid-template-columns: 1fr repeat(3, auto);
+	grid-template-rows: repeat(2, auto);
+	grid-template-areas:
+		"name duration delete edit"
+		"tag . . .";
+}
+
 @media (min-width: 0) {
+	.history-main {
+		@include history-main-4-row;
+	}
+
 	.history-form {
 		grid-template-columns: auto;
 		grid-template-rows: repeat(5, auto);
@@ -64,13 +95,27 @@ $history-padding: 46px;
 }
 
 @media (min-width: $bp-phone) {
+	.history-main {
+		@include history-main-1-row;
+	}
+
 	.history-form {
 		grid-template-columns: repeat(2, auto);
 		grid-template-rows: repeat(3, auto);
 	}
 }
 
+@media (min-width: $bp-tablet) {
+	.history-main {
+		@include history-main-4-row;
+	}
+}
+
 @media (min-width: $bp-desktop) {
+	.history-main {
+		@include history-main-1-row;
+	}
+
 	.history-form {
 		grid-template-columns: repeat(5, auto);
 		grid-template-rows: auto;

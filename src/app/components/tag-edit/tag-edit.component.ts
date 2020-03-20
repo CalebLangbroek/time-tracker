@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TagService } from 'src/app/services/tag.service';
 
+const DEFAULT_COLOR = '#ffffff'
+
 @Component({
 	selector: 'app-tag-edit',
 	templateUrl: './tag-edit.component.html',
@@ -14,13 +16,13 @@ export class TagEditComponent implements OnInit {
 
 	ngOnInit() {
 		this.tagName = '';
-		this.tagColor = '#ffffff';
+		this.tagColor = DEFAULT_COLOR;
 	}
 
 	onSave() {
 		this.tagService.setTag(this.tagName, this.tagColor);
 
-		this.tagColor = this.tagName = '';
+		this.tagColor = this.tagName = DEFAULT_COLOR;
 	}
 
 	onCancel() {

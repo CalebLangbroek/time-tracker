@@ -29,10 +29,11 @@
 
 				<div class="history-entry-tag">
 					<mat-chip-list
+						class="history-entry-tag-badge"
 						*ngIf="timeEntry.tag && !timeEntry.showTagEdit"
 					>
 						<mat-chip
-						matTooltip="Click to remove"
+							matTooltip="Click to remove"
 							[ngStyle]="{
 								color: 'white',
 								'background-color': timeEntry.tag.color
@@ -56,22 +57,22 @@
 							type="text"
 							placeholder="Tag"
 							(ngModelChange)="
-								onChangeTag(
+								onChangeTagEdit(
 									timeEntry.actualIndex,
-									$event,
 									dayIndex,
-									entryIndex
+									entryIndex,
+									$event
 								)
 							"
 							[ngModel]="currentTag"
 							[matAutocomplete]="timeEntryTagAuto"
 							matInput
 						/>
-						<mat-autocomplete
-							#timeEntryTagAuto="matAutocomplete"
-							[displayWith]="displayWithTag"
-						>
-							<mat-option *ngFor="let tag of tags" [value]="tag">
+						<mat-autocomplete #timeEntryTagAuto="matAutocomplete">
+							<mat-option
+								*ngFor="let tag of tagsSubject | async"
+								[value]="tag"
+							>
 								<mat-icon
 									matTooltip="{{ tag.color }}"
 									[ngStyle]="{ color: tag.color }"
@@ -96,7 +97,7 @@
 					>
 				</div>
 
-				<div class="history-entry-delete" matTooltip="Click to edit">
+				<div class="history-entry-edit" matTooltip="Click to edit">
 					<mat-icon (click)="onClickEdit(dayIndex, entryIndex)">
 						<span *ngIf="!timeEntry.isOpen"
 							>keyboard_arrow_down</span

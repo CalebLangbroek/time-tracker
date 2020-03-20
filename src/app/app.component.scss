@@ -1,8 +1,4 @@
-// Screen sizes
-$bp-phone: 576px;
-$bp-tablet: 768px;
-$bp-laptop: 992px;
-$bp-desktop: 1200px;
+@import './scss/breakpoints';
 
 // Colors
 $contentbg: whitesmoke;
@@ -25,7 +21,7 @@ $navsize: 275px;
 		width: $navsize;
 		background: $navbg;
 	}
-	
+
 	.app-content {
 		flex: 1;
 		height: $full;
@@ -44,12 +40,12 @@ $navsize: 275px;
 	width: $full;
 }
 
-@media (max-width: $bp-phone) { 
+@media (max-width: $bp-phone) {
 
 }
 
-@media (min-width: $bp-phone) { 
-	
+@media (min-width: $bp-phone) {
+
 }
 
 @media (max-width: $bp-tablet) {
@@ -66,5 +62,5 @@ $navsize: 275px;
 }
 
 @media (min-width: $bp-desktop) {
-	
+
 }
