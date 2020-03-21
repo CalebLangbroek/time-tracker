@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
 import { Subscription } from 'rxjs';
 
+import { Tag } from 'src/app/models/tag.model';
 import { TagService } from 'src/app/services/tag.service';
 
 @Component({
@@ -8,29 +11,37 @@ import { TagService } from 'src/app/services/tag.service';
 	templateUrl: './tag.component.html',
 	styleUrls: ['./tag.component.scss']
 })
-export class TagComponent implements OnInit {
-	isEditVis: boolean;
-	private isEditVisSub: Subscription;
+export class TagComponent implements OnInit, OnDestroy {
+	private tagSub: Subscription;
+	tag: Tag;
+	isLoading: boolean;
 
-	constructor(private tagService: TagService) {}
+	constructor(
+		private route: ActivatedRoute,
+		private tagService: TagService
+	) {}
 
 	ngOnInit() {
-		this.isEditVis = this.tagService.isEditVisSubject.getValue();
+		// Initialize the tag as empty
+		this.tag = {
+			name: '',
+			color: ''
+		};
 
-		// Subscribe to opening and closing of edit component
-		this.isEditVisSub = this.tagService.isEditVisSubject.subscribe(
-			isEditVis => (this.isEditVis = isEditVis)
-		);
+		// Fetch the tag from the database
+		this.isLoading = true;
+		const tagID = this.route.snapshot.params['id'];
+		this.tagSub = this.tagService
+			.getTag(tagID)
+			.subscribe(this.tagSubNextCallback.bind(this));
 	}
 
 	ngOnDestroy() {
-		this.isEditVisSub.unsubscribe();
+		this.tagSub.unsubscribe();
 	}
 
-	/**
-	 * Called when the add new tag button is clicked.
-	 */
-	onNewTag() {
-		this.tagService.onShowEdit();
+	private tagSubNextCallback(tag: Tag) {
+		this.tag = tag;
+		this.isLoading = false;
 	}
 }

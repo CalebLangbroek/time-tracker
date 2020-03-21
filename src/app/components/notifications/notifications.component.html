@@ -1,6 +1,10 @@
-<div class="notifications-container" [ngClass]="notification.type" *ngFor="let notification of notifications; index as i">
-	<div class="notification-message">
+<div
+	class="notifications-container"
+	[ngClass]="notification.type"
+	*ngFor="let notification of notifications; index as i"
+>
+	<div class="notifications-message">
 		{{ notification.message }}
 	</div>
-	<mat-icon class="md-light notification-close" (click)="removeNotification(i)">close</mat-icon>
+	<mat-icon class="md-light" (click)="removeNotification(i)">close</mat-icon>
 </div>

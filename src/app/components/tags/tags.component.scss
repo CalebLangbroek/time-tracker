@@ -2,7 +2,7 @@
 
 $padding: 10px;
 
-.tag {
+.tags {
 	&-container {
 		height: 100%;
 		padding: $padding;
@@ -12,10 +12,5 @@ $padding: 10px;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-	}
-
-	&-done-button {
-		color: white;
-		background-color: rgb(40,167,69);
 	}
 }

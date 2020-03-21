@@ -1,19 +1,21 @@
-.auth-container {
-	height: 100%;
-	width: 100%;
-	display: grid;
-	grid-template-columns: repeat(3, auto);
-	grid-template-rows: repeat(3, auto);
-	grid-template-areas:
-		". . . "
-		". cd ."
-		". . . ";
-
-	.auth-card {
-        grid-area: cd;
+.auth {
+	&-container {
+		height: 100%;
+		width: 100%;
+		display: grid;
+		grid-template-columns: repeat(3, auto);
+		grid-template-rows: repeat(3, auto);
+		grid-template-areas:
+			". . . "
+			". cd ."
+			". . . ";
+	}
+	&-card {
+		grid-area: cd;
 		margin: 10px;
 	}
-	.auth-form {
+
+	&-form {
 		display: grid;
 	}
 }

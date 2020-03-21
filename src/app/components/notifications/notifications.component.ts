@@ -15,22 +15,23 @@ const MAX_LENGTH = 5;
 })
 export class NotificationsComponent implements OnInit, OnDestroy {
 	notifications: Notification[];
-	notificationsObservable: Subscription;
+	notificationsSub: Subscription;
 
-	constructor(private notificationService: NotificationService) { }
+	constructor(private notificationService: NotificationService) {}
 
 	ngOnInit() {
 		this.notifications = [];
 
 		// Subscribe here so we can know of new notifications
-		this.notificationsObservable = this.notificationService.notifications
-			.subscribe({
+		this.notificationsSub = this.notificationService.notifications.subscribe(
+			{
 				next: this.setNotification.bind(this)
-			});
+			}
+		);
 	}
 
 	ngOnDestroy() {
-		this.notificationsObservable.unsubscribe();
+		this.notificationsSub.unsubscribe();
 	}
 
 	/**
@@ -65,7 +66,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 	/**
 	 * Remove the oldest notification.
 	 */
-	removeOldestNotification() {
+	private removeOldestNotification() {
 		this.notifications.splice(0, 1);
 	}
 }

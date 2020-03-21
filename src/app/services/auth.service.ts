@@ -119,10 +119,15 @@ export class AuthService {
 	 * @returns Error message as an Observable.
 	 */
 	private handleError(error: HttpErrorResponse): Observable<string> {
-		// Convert it to a message to display to the user
-		let errorMessage = AuthErrorCodes[error.error.error.message];
+		let errorMessage = '';
 
-		if (!errorMessage) {
+		// Try and convert to a message to display to the user
+		try {
+			const errCodesMsg = AuthErrorCodes[error.error.error.message];
+			errorMessage = errCodesMsg
+				? errCodesMsg
+				: 'An unknown error occurred';
+		} catch (error) {
 			errorMessage = 'An unknown error occurred';
 		}
 

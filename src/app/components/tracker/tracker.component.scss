@@ -1,24 +1,28 @@
-.tracker-container {
-	padding: 10px;
+.tracker {
+	&-container {
+		padding: 10px;
+	}
 
-	.tracker-card {
+	&-card {
 		display: flex;
 		align-items: center;
-		
-		.tracker-button,.tracker-time,.tracker-name  {
-			padding: 5px;
-		}
+	}
 
-		.tracker-time {
-			font-size: 24px;
-		}
+	&-button,
+	&-time,
+	&-name {
+		padding: 5px;
+	}
 
-		.tracker-name {
-			flex: 1;
-		}
+	&-time {
+		font-size: 24px;
+	}
 
-		.tracker-name-input {
-			width: 100%;
-		}
+	&-name {
+		flex: 1;
+	}
+
+	&-name-input {
+		width: 100%;
 	}
 }

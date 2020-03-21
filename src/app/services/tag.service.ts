@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject, Observable, throwError } from 'rxjs';
 
 import { Tag } from '../models/tag.model';
 import { TagApiService } from './tag-api.service';
@@ -39,6 +39,25 @@ export class TagService {
 		this.isEditVisSubject.next(false);
 	}
 
+	getTag(tagID: string): Observable<Tag> {
+		return new Observable<Tag>(sub => {
+			// Try and find in tags array
+			const tag = this.tags.find(tag => tag.id === tagID);
+
+			if (tag) {
+				// If tags are already loaded, find and return
+				sub.next(tag);
+				sub.complete();
+			} else {
+				// Otherwise return from server
+				this.tagAPI.getTag(tagID).subscribe(res => {
+					sub.next(res);
+					sub.complete();
+				}, this.handleAPIError.bind(this));
+			}
+		});
+	}
+
 	setTag(name: string, color: string) {
 		const newTag: Tag = {
 			name,
@@ -54,6 +73,12 @@ export class TagService {
 
 			// Notify any subscribers
 			this.tagsSubject.next(this.tags);
+
+			// Send notification
+			this.notification.sendNotification({
+				message: 'Tag created',
+				type: 'success'
+			});
 		}, this.handleAPIError.bind(this));
 	}
 

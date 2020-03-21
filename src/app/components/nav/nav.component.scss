@@ -1,35 +1,34 @@
-@import '../../scss/breakpoints';
+@import "../../scss/breakpoints";
 
 $padding: 10px;
 
-.nav-container {
-	color: white;
-	padding: $padding;
-	box-sizing: border-box;
-	display: flex;
-	flex-direction: column;
-	overflow-y: auto;
-	overflow-x: hidden;
-}
-
-.nav-text {
-	color: white;
-}
-
-.nav-signedin-container {
-	display: flex;
-	flex-direction: column;
-}
-
-@media (max-width: $bp-tablet) {
-	.nav-close {
+.nav {
+	&-container {
+		color: white;
+		padding: $padding;
+		box-sizing: border-box;
 		display: flex;
-		justify-content: flex-end;
+		flex-direction: column;
+		overflow-y: auto;
+		overflow-x: hidden;
 	}
-}
 
-@media (min-width: $bp-tablet) {
-	.nav-close {
-		display: none;
+	&-text {
+		color: white;
+	}
+
+	&-signedin-container {
+		display: flex;
+		flex-direction: column;
+	}
+
+	&-close {
+		@include bp("max", "tablet") {
+			display: flex;
+			justify-content: flex-end;
+		}
+		@include bp("min", "tablet") {
+			display: none;
+		}
 	}
 }

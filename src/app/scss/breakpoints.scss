@@ -3,3 +3,24 @@ $bp-phone: 576px;
 $bp-tablet: 768px;
 $bp-laptop: 992px;
 $bp-desktop: 1200px;
+
+@mixin bp($op, $size) {
+	$media: 'screen and (' + $op + '-width: ';
+
+	@if $size == "phone" {
+		$media: $media + $bp-phone + ')';
+	} @else if $size == "tablet" {
+		$media: $media + $bp-tablet + ')';
+	} @else if $size == "laptop" {
+		$media: $media + $bp-laptop + ')';
+	} @else if $size == "desktop" {
+		$media: $media + $bp-desktop + ')';
+	} @else {
+		$media: $media + '0)';
+	}
+
+	// Output
+	@media #{$media} {
+		@content
+	}
+}

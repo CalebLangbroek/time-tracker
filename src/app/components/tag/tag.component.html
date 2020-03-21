@@ -1,14 +1,21 @@
 <div class="tag-container">
 	<div class="tag-header">
-		<h1>Tags</h1>
+		<h1>Tag</h1>
 		<button
 			mat-raised-button
-			color="primary"
-			(click)="onNewTag()"
+			class="tag-done-button"
+			[routerLink]="['/tags']"
 		>
-			Add New Tag
+			Done
 		</button>
 	</div>
-	<app-tag-edit *ngIf="isEditVis"></app-tag-edit>
-	<app-tag-list></app-tag-list>
+	<mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
+	<div *ngIf="!isLoading">
+		<h3>
+			{{ tag.name }}
+		</h3>
+		<mat-icon matTooltip="{{ tag.color }}" [ngStyle]="{ color: tag.color }">
+			<span>lens</span>
+		</mat-icon>
+	</div>
 </div>

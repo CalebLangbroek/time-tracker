@@ -16,8 +16,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
-import { MatAutocompleteModule } from '@angular/material/autocomplete'
-import { MatChipsModule } from '@angular/material/chips'
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatChipsModule } from '@angular/material/chips';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -32,6 +32,7 @@ import { AuthInterceptorService } from './services/auth-interceptor.service';
 import { TagComponent } from './components/tag/tag.component';
 import { TagEditComponent } from './components/tag-edit/tag-edit.component';
 import { TagListComponent } from './components/tag-list/tag-list.component';
+import { TagsComponent } from './components/tags/tags.component';
 
 @NgModule({
 	declarations: [
@@ -45,7 +46,8 @@ import { TagListComponent } from './components/tag-list/tag-list.component';
 		AuthComponent,
 		TagComponent,
 		TagEditComponent,
-		TagListComponent
+		TagListComponent,
+		TagsComponent
 	],
 	imports: [
 		BrowserModule,

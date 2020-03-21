@@ -8,7 +8,7 @@
 				[(ngModel)]="tagName"
 			/>
 		</mat-form-field>
-		<mat-form-field class="tag-edit-name">
+		<mat-form-field class="tag-edit-color">
 			<input
 				type="color"
 				placeholder="Color"
@@ -20,15 +20,15 @@
 			mat-raised-button
 			color="primary"
 			(click)="onSave()"
-			class="tag-edit-button"
+			class="tag-edit-save-button"
 		>
-			Save New Tag
+			Save
 		</button>
 		<button
 			mat-raised-button
 			color="warn"
 			(click)="onCancel()"
-			class="tag-edit-button"
+			class="tag-edit-cancel-button"
 		>
 			Cancel
 		</button>

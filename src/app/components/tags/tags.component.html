@@ -1,0 +1,14 @@
+<div class="tags-container">
+	<div class="tags-header">
+		<h1>Tags</h1>
+		<button
+			mat-raised-button
+			color="primary"
+			(click)="onNewTag()"
+		>
+			Add New Tag
+		</button>
+	</div>
+	<app-tag-edit *ngIf="isEditVis"></app-tag-edit>
+	<app-tag-list></app-tag-list>
+</div>

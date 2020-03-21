@@ -19,7 +19,7 @@ export class TagApiService {
 	getTags(): Observable<Tag[]> {
 		const user = this.auth.user.getValue();
 
-		return this.http.get(`${PROJECT_URL}/tags/${user.id}.json`).pipe(
+		return this.http.get<Tag[]>(`${PROJECT_URL}/tags/${user.id}.json`).pipe(
 			map(res => {
 				const result: Tag[] = [];
 				for (const key in res) {
@@ -29,6 +29,20 @@ export class TagApiService {
 			}),
 			catchError(this.handleError.bind(this))
 		);
+	}
+
+	getTag(tagID: string): Observable<Tag> {
+		const user = this.auth.user.getValue();
+
+		return this.http
+			.get<Tag>(`${PROJECT_URL}/tags/${user.id}/${tagID}.json`)
+			.pipe(
+				map(res => {
+					res.id = tagID;
+					return res;
+				}),
+				catchError(this.handleError.bind(this))
+			);
 	}
 
 	/**
@@ -66,6 +80,10 @@ export class TagApiService {
 	 * @returns Error message as an Observable.
 	 */
 	private handleError(error: HttpErrorResponse): Observable<string> {
-		return throwError(error.error.error);
+		if (error instanceof HttpErrorResponse) {
+			return throwError(error.error.error);
+		} else {
+			return throwError('An unknown error occurred');
+		}
 	}
 }

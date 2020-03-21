@@ -8,9 +8,30 @@ $green: rgb(40, 167, 69);
 $padding: 10px;
 $history-padding: 46px;
 
+// History main rows
+@mixin history-main-1-row {
+	grid-template-columns: 1fr repeat(4, auto);
+	grid-template-rows: repeat(1, auto);
+	grid-template-areas: "name tag duration delete edit";
+}
+
+@mixin history-main-4-row {
+	margin-bottom: 5px;
+	grid-template-columns: 1fr repeat(3, auto);
+	grid-template-rows: repeat(2, auto);
+	grid-template-areas:
+		"name duration delete edit"
+		"tag . . .";
+}
+
 .history {
 	&-container {
 		padding: $padding;
+
+		@include bp("max", "tablet") {
+			// To account for nav toggle button at top on mobile
+			margin-bottom: $history-padding;
+		}
 	}
 
 	&-main {
@@ -18,6 +39,22 @@ $history-padding: 46px;
 		align-items: center;
 		row-gap: 5px;
 		column-gap: 10px;
+
+		@include bp("min", "") {
+			@include history-main-4-row;
+		}
+
+		@include bp("min", "phone") {
+			@include history-main-1-row;
+		}
+
+		@include bp("min", "tablet") {
+			@include history-main-4-row;
+		}
+
+		@include bp("min", "laptop") {
+			@include history-main-1-row;
+		}
 	}
 
 	&-edit {
@@ -34,6 +71,21 @@ $history-padding: 46px;
 		align-items: center;
 		row-gap: 5px;
 		column-gap: 10px;
+
+		@include bp("min", "") {
+			grid-template-columns: auto;
+			grid-template-rows: repeat(5, auto);
+		}
+
+		@include bp("min", "phone") {
+			grid-template-columns: repeat(2, auto);
+			grid-template-rows: repeat(3, auto);
+		}
+
+		@include bp("min", "desktop") {
+			grid-template-columns: repeat(5, auto);
+			grid-template-rows: auto;
+		}
 	}
 
 	&-entry {
@@ -67,66 +119,5 @@ $history-padding: 46px;
 		&-edit {
 			grid-area: edit;
 		}
-	}
-}
-
-@mixin history-main-1-row {
-	grid-template-columns: 1fr repeat(4, auto);
-	grid-template-rows: repeat(1, auto);
-	grid-template-areas: "name tag duration delete edit";
-}
-
-@mixin history-main-4-row {
-	margin-bottom: 5px;
-	grid-template-columns: 1fr repeat(3, auto);
-	grid-template-rows: repeat(2, auto);
-	grid-template-areas:
-		"name duration delete edit"
-		"tag . . .";
-}
-
-@media (min-width: 0) {
-	.history-main {
-		@include history-main-4-row;
-	}
-
-	.history-form {
-		grid-template-columns: auto;
-		grid-template-rows: repeat(5, auto);
-	}
-}
-
-@media (min-width: $bp-phone) {
-	.history-main {
-		@include history-main-1-row;
-	}
-
-	.history-form {
-		grid-template-columns: repeat(2, auto);
-		grid-template-rows: repeat(3, auto);
-	}
-}
-
-@media (min-width: $bp-tablet) {
-	.history-main {
-		@include history-main-4-row;
-	}
-}
-
-@media (min-width: $bp-desktop) {
-	.history-main {
-		@include history-main-1-row;
-	}
-
-	.history-form {
-		grid-template-columns: repeat(5, auto);
-		grid-template-rows: auto;
-	}
-}
-
-@media (max-width: $bp-tablet) {
-	// To account for nav toggle button at top on mobile
-	.history-container {
-		margin-bottom: $history-padding;
 	}
 }

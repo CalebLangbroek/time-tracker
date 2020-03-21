@@ -1,12 +1,14 @@
 <div class="tag-list-container">
 	<mat-form-field class="tag-list-filter">
-		<input type="text" placeholder="Filter" matInput [(ngModel)]="filter" />
+		<input
+			type="text"
+			placeholder="Filter"
+			(keyup)="onFilterKeyUp(filter.value)"
+			#filter
+			matInput
+		/>
 	</mat-form-field>
-	<table
-		mat-table
-		[dataSource]="tagService.tagsSubject"
-		class="mat-elevation-z8"
-	>
+	<table mat-table [dataSource]="tagsSubject" class="mat-elevation-z8">
 		<ng-container matColumnDef="name">
 			<th mat-header-cell *matHeaderCellDef>Name</th>
 			<td mat-cell *matCellDef="let tag">{{ tag.name }}</td>
@@ -36,11 +38,23 @@
 			</td>
 		</ng-container>
 
+		<ng-container matColumnDef="edit">
+			<th mat-header-cell *matHeaderCellDef>Edit</th>
+			<td mat-cell *matCellDef="let tag">
+				<mat-icon
+					matTooltip="Click to edit"
+					[routerLink]="['/tags/' + tag.id]"
+					>create</mat-icon
+				>
+			</td>
+		</ng-container>
+
 		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 		<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 	</table>
 
-	<p *ngIf="tagsLength === 0">
+	<mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
+	<p *ngIf="!isLoading && tags.length === 0">
 		It looks like you don't have any tags yet
 	</p>
 </div>

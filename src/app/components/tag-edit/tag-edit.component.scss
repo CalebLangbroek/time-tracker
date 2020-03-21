@@ -1,22 +1,58 @@
+@import "../../scss/breakpoints";
+
 // Sizing
 $spacing: 5px;
 
-.tag-edit-container {
-	margin: 10px;
-}
-.tag-edit-card {
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
-	flex-wrap: wrap;
-	padding: $spacing;
-
-	.tag-edit-name {
-		flex: 1;
+.tag-edit {
+	&-container {
+		margin: 10px;
 	}
 
-	.tag-edit-button,
-	.tag-edit-name {
+	&-card {
+		display: grid;
+		align-items: center;
+		justify-content: flex-start;
+		row-gap: 5px;
+		column-gap: 10px;
+		padding: $spacing;
+
+		@include bp("min", "") {
+			grid-template-columns: 1fr repeat(3, auto);
+			grid-template-rows: repeat(2, auto);
+			grid-template-areas:
+				"name name color color"
+				". . save cancel";
+		}
+
+		@include bp("min", "laptop") {
+			grid-template-columns: 1fr repeat(4, auto);
+			grid-template-rows: repeat(1, auto);
+			grid-template-areas:
+				"name name color save cancel";
+		}
+	}
+
+	&-name,
+	&-color,
+	&-save-button,
+	&-cancel-button {
 		margin: $spacing;
+	}
+
+	&-name {
+		flex: 1;
+		grid-area: name;
+	}
+
+	&-color {
+		grid-area: color;
+	}
+
+	&-save-button {
+		grid-area: save;
+	}
+
+	&-cancel-button {
+		grid-area: cancel;
 	}
 }

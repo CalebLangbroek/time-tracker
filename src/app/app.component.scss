@@ -1,4 +1,4 @@
-@import './scss/breakpoints';
+@import "./scss/breakpoints";
 
 // Colors
 $contentbg: whitesmoke;
@@ -8,59 +8,43 @@ $navbg: rgba(32, 32, 32);
 $full: 100%;
 $navsize: 275px;
 
-.app-container {
-	display: flex;
-	height: 100vh;
-	width: $full;
-
-	.app-nav-toggle{
-		margin: 10px;
+.app {
+	&-container {
+		display: flex;
+		height: 100vh;
+		width: $full;
 	}
 
-	.app-nav {
+	&-nav {
 		width: $navsize;
 		background: $navbg;
+
+		@include bp("max", "tablet") {
+			position: absolute;
+			z-index: 2;
+			top: 0;
+			bottom: 0;
+		}
+
+		&-toggle {
+			margin: 10px;
+		}
 	}
 
-	.app-content {
+	&-content {
 		flex: 1;
 		height: $full;
 		width: $full;
 		background-color: $contentbg;
 	}
-}
 
-.app-notification {
-	display: flex;
-	align-items: center;
-    flex-direction: column;
-	position: absolute;
-	bottom: 0;
-	z-index: 2;
-	width: $full;
-}
-
-@media (max-width: $bp-phone) {
-
-}
-
-@media (min-width: $bp-phone) {
-
-}
-
-@media (max-width: $bp-tablet) {
-	.app-nav {
+	&-notification {
+		display: flex;
+		align-items: center;
+		flex-direction: column;
 		position: absolute;
-		z-index: 2;
-		top: 0;
 		bottom: 0;
+		z-index: 2;
+		width: $full;
 	}
-}
-
-@media (min-width: $bp-laptop) {
-
-}
-
-@media (min-width: $bp-desktop) {
-
 }
