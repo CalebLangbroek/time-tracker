@@ -9,7 +9,7 @@ import { TagService } from 'src/app/services/tag.service';
 @Component({
 	selector: 'app-tag',
 	templateUrl: './tag.component.html',
-	styleUrls: ['./tag.component.scss']
+	styleUrls: ['./tag.component.scss'],
 })
 export class TagComponent implements OnInit, OnDestroy {
 	private tagSub: Subscription;
@@ -25,19 +25,25 @@ export class TagComponent implements OnInit, OnDestroy {
 		// Initialize the tag as empty
 		this.tag = {
 			name: '',
-			color: ''
+			color: '',
 		};
 
 		// Fetch the tag from the database
 		this.isLoading = true;
-		const tagID = this.route.snapshot.params['id'];
+		this.tag.id = this.route.snapshot.params['id'];
 		this.tagSub = this.tagService
-			.getTag(tagID)
+			.getTag(this.tag.id)
 			.subscribe(this.tagSubNextCallback.bind(this));
 	}
 
 	ngOnDestroy() {
 		this.tagSub.unsubscribe();
+	}
+
+	onSave(name: string, color: string) {
+		this.tag.name = name;
+		this.tag.color = color;
+		this.tagService.updateTag(this.tag);
 	}
 
 	private tagSubNextCallback(tag: Tag) {

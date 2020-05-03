@@ -16,6 +16,17 @@ $padding: 10px;
 
 	&-done-button {
 		color: white;
-		background-color: rgb(40,167,69);
+		background-color: rgb(40, 167, 69);
+	}
+
+	&-edit {
+		&-container {
+			width: 50%;
+		}
+
+		&-form {
+			display: flex;
+			flex-direction: column;
+		}
 	}
 }

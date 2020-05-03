@@ -6,10 +6,10 @@ import { TagApiService } from './tag-api.service';
 import { NotificationService } from './notification.service';
 
 @Injectable({
-	providedIn: 'root'
+	providedIn: 'root',
 })
 export class TagService {
-	private tags: Tag[];
+	private tags: Tag[] = [];
 	tagsSubject = new BehaviorSubject<Tag[]>([]);
 	isEditVisSubject = new BehaviorSubject<boolean>(false);
 
@@ -17,9 +17,7 @@ export class TagService {
 		private tagAPI: TagApiService,
 		private notification: NotificationService
 	) {
-		this.tags = [];
-
-		this.tagAPI.getTags().subscribe(resTags => {
+		this.tagAPI.getTags().subscribe((resTags) => {
 			this.tags = resTags;
 			this.tagsSubject.next(this.tags);
 		}, this.handleAPIError.bind(this));
@@ -40,9 +38,9 @@ export class TagService {
 	}
 
 	getTag(tagID: string): Observable<Tag> {
-		return new Observable<Tag>(sub => {
+		return new Observable<Tag>((sub) => {
 			// Try and find in tags array
-			const tag = this.tags.find(tag => tag.id === tagID);
+			const tag = this.tags.find((tag) => tag.id === tagID);
 
 			if (tag) {
 				// If tags are already loaded, find and return
@@ -50,7 +48,7 @@ export class TagService {
 				sub.complete();
 			} else {
 				// Otherwise return from server
-				this.tagAPI.getTag(tagID).subscribe(res => {
+				this.tagAPI.getTag(tagID).subscribe((res) => {
 					sub.next(res);
 					sub.complete();
 				}, this.handleAPIError.bind(this));
@@ -58,13 +56,13 @@ export class TagService {
 		});
 	}
 
-	setTag(name: string, color: string) {
+	createTag(name: string, color: string) {
 		const newTag: Tag = {
 			name,
-			color
+			color,
 		};
 
-		this.tagAPI.setTag(newTag).subscribe(resTag => {
+		this.tagAPI.createTag(newTag).subscribe((resTag) => {
 			// Save with the new ID
 			newTag.id = resTag.name;
 
@@ -77,12 +75,24 @@ export class TagService {
 			// Send notification
 			this.notification.sendNotification({
 				message: 'Tag created',
-				type: 'success'
+				type: 'success',
 			});
 		}, this.handleAPIError.bind(this));
 	}
 
-	setTagName(index: number, name: string) {}
+	updateTag(tag: Tag) {
+		const index = this.tags.findIndex((tag) => tag.id === tag.id);
+		this.tags[index] = tag;
+
+		this.tagAPI.updateTag(tag).subscribe(() => {
+			this.notification.sendNotification({
+				message: 'Tag saved',
+				type: 'success',
+			});
+		}, this.handleAPIError.bind(this));
+
+		this.tagsSubject.next(this.tags);
+	}
 
 	/**
 	 * Remove a tag from the array at a given index.
@@ -93,12 +103,12 @@ export class TagService {
 			// Send notification
 			this.notification.sendNotification({
 				message: 'Tag deleted',
-				type: 'success'
+				type: 'success',
 			});
 		}, this.handleAPIError.bind(this));
 
 		// Remove tag from local array
-		this.tags = this.tags.filter(tag => tag.id !== tagID);
+		this.tags = this.tags.filter((tag) => tag.id !== tagID);
 
 		// Notify any subscribers
 		this.tagsSubject.next(this.tags);
@@ -111,7 +121,7 @@ export class TagService {
 	private handleAPIError(err: string) {
 		this.notification.sendNotification({
 			message: err,
-			type: 'danger'
+			type: 'danger',
 		});
 	}
 }

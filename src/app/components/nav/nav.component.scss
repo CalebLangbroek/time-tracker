@@ -22,6 +22,21 @@ $padding: 10px;
 		flex-direction: column;
 	}
 
+	&-link {
+		display: flex;
+		align-items: center;
+		width: 100%;
+		border-radius: 5px;
+
+		&-active {
+			background-color: black;
+		}
+	}
+
+	&-signout {
+		margin: $padding 0;
+	}
+
 	&-close {
 		@include bp("max", "tablet") {
 			display: flex;

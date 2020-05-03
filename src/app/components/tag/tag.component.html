@@ -17,5 +17,25 @@
 		<mat-icon matTooltip="{{ tag.color }}" [ngStyle]="{ color: tag.color }">
 			<span>lens</span>
 		</mat-icon>
+		<div class="tag-edit-container">
+			<form
+				class="tag-edit-form"
+				(ngSubmit)="onSave(name.value, color.value)"
+			>
+				<mat-form-field>
+					<input [value]="tag.name" type="text" #name matInput />
+				</mat-form-field>
+				<mat-form-field>
+					<input type="color" [value]="tag.color" #color matInput />
+				</mat-form-field>
+				<button
+					mat-raised-button
+					color="primary"
+					class="tag-edit-save-button"
+				>
+					Save
+				</button>
+			</form>
+		</div>
 	</div>
 </div>

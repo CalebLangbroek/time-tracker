@@ -14,13 +14,13 @@ const ENTRY_LIMIT = 25;
 // Entry as stored on the server
 interface ResponseEntry {
 	name: string;
-	start: Date;
-	end: Date;
+	start: number;
+	end: number;
 	tag?: Tag;
 }
 
 @Injectable({
-	providedIn: 'root'
+	providedIn: 'root',
 })
 export class ApiService {
 	constructor(private auth: AuthService, private http: HttpClient) {}
@@ -39,7 +39,7 @@ export class ApiService {
 				`${PROJECT_URL}/entries/${user.id}.json?orderBy="start"&limitToLast=${ENTRY_LIMIT}`
 			)
 			.pipe(
-				map(res => {
+				map((res) => {
 					const result: Entry[] = [];
 					for (const key in res) {
 						result.push(this.convertToEntry(key, res[key]));
@@ -136,8 +136,8 @@ export class ApiService {
 	private clearEntryFields(entry: Entry): ResponseEntry {
 		return {
 			name: entry.name,
-			start: entry.start,
-			end: entry.end
+			start: entry.start.getTime(),
+			end: entry.end.getTime(),
 		};
 	}
 
@@ -150,7 +150,7 @@ export class ApiService {
 	private convertToEntry(entryID: string, resEntry: ResponseEntry): Entry {
 		const start = new Date(resEntry.start);
 		const end = new Date(resEntry.end);
-		const duration = (end.getTime() - start.getTime()) / 1000;
+		const duration = (resEntry.end - resEntry.start) / 1000;
 
 		const entry: Entry = {
 			id: entryID,
@@ -158,7 +158,7 @@ export class ApiService {
 			duration,
 			start,
 			end,
-			tag: resEntry.tag
+			tag: resEntry.tag,
 		};
 
 		return entry;

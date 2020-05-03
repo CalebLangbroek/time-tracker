@@ -4,3 +4,11 @@ table {
 .tag-list-filter {
 	width: 100%;
 }
+
+.mat-column {
+	width: 10%;
+
+	&-name{
+		width: 70%;
+	}
+}

@@ -10,8 +10,13 @@ import { Tag } from '../models/tag.model';
 
 const PROJECT_URL = environment.FIREBASE_PROJECT_URL;
 
+interface ResponseTag {
+	name: string;
+	color: string;
+}
+
 @Injectable({
-	providedIn: 'root'
+	providedIn: 'root',
 })
 export class TagApiService {
 	constructor(private auth: AuthService, private http: HttpClient) {}
@@ -20,14 +25,14 @@ export class TagApiService {
 		const user = this.auth.user.getValue();
 
 		return this.http.get<Tag[]>(`${PROJECT_URL}/tags/${user.id}.json`).pipe(
-			map(res => {
+			map((res) => {
 				const result: Tag[] = [];
 				for (const key in res) {
 					result.push(this.convertToTag(key, res[key]));
 				}
 				return result;
 			}),
-			catchError(this.handleError.bind(this))
+			catchError(this.handleHTTPError.bind(this))
 		);
 	}
 
@@ -37,11 +42,11 @@ export class TagApiService {
 		return this.http
 			.get<Tag>(`${PROJECT_URL}/tags/${user.id}/${tagID}.json`)
 			.pipe(
-				map(res => {
+				map((res) => {
 					res.id = tagID;
 					return res;
 				}),
-				catchError(this.handleError.bind(this))
+				catchError(this.handleHTTPError.bind(this))
 			);
 	}
 
@@ -49,12 +54,12 @@ export class TagApiService {
 	 * Create a new tag.
 	 * @param tag New tag to create.
 	 */
-	setTag(tag: Tag): Observable<{ name: string }> {
+	createTag(tag: Tag): Observable<{ name: string }> {
 		const user = this.auth.user.getValue();
 
 		return this.http
 			.post(`${PROJECT_URL}/tags/${user.id}.json`, tag)
-			.pipe(catchError(this.handleError.bind(this)));
+			.pipe(catchError(this.handleHTTPError.bind(this)));
 	}
 
 	/**
@@ -66,7 +71,33 @@ export class TagApiService {
 
 		return this.http
 			.delete(`${PROJECT_URL}/tags/${user.id}/${tagID}.json`)
-			.pipe(catchError(this.handleError.bind(this)));
+			.pipe(catchError(this.handleHTTPError.bind(this)));
+	}
+
+	/**
+	 * Update a tag in the database.
+	 * @param tag New tag values.
+	 */
+	updateTag(tag: Tag) {
+		const user = this.auth.user.getValue();
+		const tagID = tag.id;
+
+		const resTag = this.clearFields(tag);
+
+		return this.http
+			.patch(`${PROJECT_URL}/tags/${user.id}/${tagID}.json`, resTag)
+			.pipe(catchError(this.handleHTTPError.bind(this)));
+	}
+
+	/**
+	 * Only keep the fields that are being saved in the database.
+	 * @param tag Tag who's fields need clearing.
+	 */
+	private clearFields(tag: Tag): ResponseTag {
+		return {
+			name: tag.name,
+			color: tag.color,
+		};
 	}
 
 	private convertToTag(tagID: string, resTag: Tag): Tag {
@@ -79,7 +110,7 @@ export class TagApiService {
 	 * @param error Error to handle.
 	 * @returns Error message as an Observable.
 	 */
-	private handleError(error: HttpErrorResponse): Observable<string> {
+	private handleHTTPError(error: HttpErrorResponse): Observable<string> {
 		if (error instanceof HttpErrorResponse) {
 			return throwError(error.error.error);
 		} else {

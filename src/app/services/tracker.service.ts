@@ -123,9 +123,6 @@ export class TrackerService {
 		}, this.handleAPIError.bind(this));
 
 		this.entries[index].tag = tag;
-
-		// Emit so any subscribers update
-		this.entriesSubject.next(this.entries);
 	}
 
 	/**
@@ -203,9 +200,6 @@ export class TrackerService {
 		}, this.handleAPIError.bind(this));
 
 		this.entries[index].tag = undefined;
-
-		// Emit so any subscribers update
-		this.entriesSubject.next(this.entries);
 	}
 
 	/**
