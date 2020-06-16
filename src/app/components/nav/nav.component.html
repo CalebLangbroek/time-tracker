@@ -26,6 +26,16 @@
 					<p mat-line class="nav-text">Tags</p>
 				</a>
 			</mat-list-item>
+			<mat-list-item>
+				<a
+					class="nav-link"
+					[routerLink]="['/projects']"
+					[routerLinkActive]="'nav-link-active'"
+				>
+					<mat-icon mat-list-icon class="md-light">work</mat-icon>
+					<p mat-line class="nav-text">Projects</p>
+				</a>
+			</mat-list-item>
 		</mat-nav-list>
 		<button
 			mat-raised-button

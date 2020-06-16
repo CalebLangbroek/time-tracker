@@ -3,9 +3,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription, BehaviorSubject } from 'rxjs';
 
 import { TrackerService } from 'src/app/services/tracker.service';
+import { TagService } from 'src/app/services/tag.service';
 import { Entry } from '../../models/entry.model';
 import { Tag } from 'src/app/models/tag.model';
-import { TagService } from 'src/app/services/tag.service';
 
 interface DayEntry {
 	duration: number;
@@ -15,7 +15,7 @@ interface DayEntry {
 @Component({
 	selector: 'app-history',
 	templateUrl: './history.component.html',
-	styleUrls: ['./history.component.scss']
+	styleUrls: ['./history.component.scss'],
 })
 export class HistoryComponent implements OnInit, OnDestroy {
 	private entriesSubs: Subscription;
@@ -24,6 +24,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
 	groupedEntries: DayEntry[];
 	isLoading: boolean;
 	tagsSubject: BehaviorSubject<Tag[]>;
+	ENTRY_LIMIT = 25;
+	entryCount = 0;
 
 	constructor(
 		private tracker: TrackerService,
@@ -36,7 +38,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
 		// Setup entry subscription
 		this.entriesSubs = this.tracker.entriesSubject.subscribe({
-			next: this.groupEntriesByDay.bind(this)
+			next: this.groupEntriesByDay.bind(this),
 		});
 
 		this.tracker.getEntries().finally(() => (this.isLoading = false));
@@ -45,7 +47,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 		this.tagsSubject = new BehaviorSubject<Tag[]>(this.tags);
 
 		// Get tags
-		this.tagsSubs = this.tagService.tagsSubject.subscribe(tags => {
+		this.tagsSubs = this.tagService.tagsSubject.subscribe((tags) => {
 			this.tags = tags;
 			this.tagsSubject.next(this.tags);
 		});
@@ -120,7 +122,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 	 */
 	private filterTagList(input: string) {
 		this.tagsSubject.next(
-			this.tags.filter(tag =>
+			this.tags.filter((tag) =>
 				tag.name.toLocaleLowerCase().includes(input.toLocaleLowerCase())
 			)
 		);
@@ -134,6 +136,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 	 */
 	private groupEntriesByDay(entries: Entry[]) {
 		const groupedEntries = [];
+		this.entryCount = entries.length;
 
 		for (let i = 0; i < entries.length; i++) {
 			const entry = entries[i];
@@ -141,7 +144,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 				year: 'numeric',
 				month: 'long',
 				day: 'numeric',
-				weekday: 'long'
+				weekday: 'long',
 			};
 			const dateStr = entry.start.toLocaleDateString('en-US', options);
 
@@ -149,7 +152,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 				groupedEntries[dateStr] = {
 					dateStr,
 					duration: 0,
-					entries: []
+					entries: [],
 				};
 			}
 

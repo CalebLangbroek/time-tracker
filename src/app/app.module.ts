@@ -33,6 +33,8 @@ import { TagComponent } from './components/tag/tag.component';
 import { TagEditComponent } from './components/tag-edit/tag-edit.component';
 import { TagListComponent } from './components/tag-list/tag-list.component';
 import { TagsComponent } from './components/tags/tags.component';
+import { ProjectsComponent } from './components/projects/projects.component';
+import { ProjectListComponent } from './components/project-list/project-list.component';
 
 @NgModule({
 	declarations: [
@@ -47,7 +49,9 @@ import { TagsComponent } from './components/tags/tags.component';
 		TagComponent,
 		TagEditComponent,
 		TagListComponent,
-		TagsComponent
+		TagsComponent,
+		ProjectsComponent,
+		ProjectListComponent
 	],
 	imports: [
 		BrowserModule,

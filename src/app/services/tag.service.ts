@@ -81,7 +81,7 @@ export class TagService {
 	}
 
 	updateTag(tag: Tag) {
-		const index = this.tags.findIndex((tag) => tag.id === tag.id);
+		const index = this.tags.findIndex((tempTag) => tempTag.id === tag.id);
 		this.tags[index] = tag;
 
 		this.tagAPI.updateTag(tag).subscribe(() => {

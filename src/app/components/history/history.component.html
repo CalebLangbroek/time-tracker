@@ -173,4 +173,12 @@
 			</mat-card>
 		</mat-card>
 	</div>
+	<div
+		class="history-load-more"
+		*ngIf="!isLoading && entryCount === ENTRY_LIMIT"
+	>
+		<button mat-raised-button color="primary">
+			Load More
+		</button>
+	</div>
 </div>

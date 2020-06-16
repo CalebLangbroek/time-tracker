@@ -16,7 +16,7 @@ export class TrackerService {
 	private startDate: Date;
 	private entries: Entry[];
 	entriesSubject = new Subject<Entry[]>();
-	trackerName: string;
+	trackerName = '';
 
 	constructor(
 		private timer: TimerService,
@@ -26,7 +26,6 @@ export class TrackerService {
 	) {
 		// Subscribe to the user so we can clear the timer and entries when they sign out
 		this.auth.user.subscribe(this.observeUser.bind(this));
-		this.trackerName = '';
 	}
 
 	/**
