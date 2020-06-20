@@ -6,6 +6,8 @@ $padding: 10px;
 	&-container {
 		height: 100%;
 		padding: $padding;
+		overflow-x: hidden;
+		overflow-y: auto;
 	}
 
 	&-header {

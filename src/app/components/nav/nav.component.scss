@@ -17,6 +17,11 @@ $padding: 10px;
 		color: white;
 	}
 
+	&-icon {
+		margin-bottom: 4px;
+		padding: 8px !important;
+	}
+
 	&-signedin-container {
 		display: flex;
 		flex-direction: column;

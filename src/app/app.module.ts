@@ -18,6 +18,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -73,7 +74,8 @@ import { ProjectListComponent } from './components/project-list/project-list.com
 		MatListModule,
 		MatTableModule,
 		MatAutocompleteModule,
-		MatChipsModule
+		MatChipsModule,
+		MatProgressBarModule
 	],
 	providers: [
 		{

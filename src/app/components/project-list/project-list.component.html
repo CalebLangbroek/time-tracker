@@ -1,1 +1,33 @@
-<p>project-list works!</p>
+<div class="tag-list-container">
+	<p *ngIf="projects.length == 0">
+		No projects
+	</p>
+	<div class="tag-list-main">
+		<mat-card *ngFor="let project of projects" class="tag-list-project">
+			<mat-card-header>
+				<div
+					mat-card-avatar
+					[ngStyle]="{ 'background-color': project.color }"
+				></div>
+				<mat-card-title>
+					{{ project.name }}
+				</mat-card-title>
+				<mat-card-subtitle>Dog </mat-card-subtitle>
+			</mat-card-header>
+			<mat-card-content>
+				{{ project.desc }}
+			</mat-card-content>
+			<mat-card-actions>
+					<button mat-mini-fab color="primary" class="tag-list-button">
+						<mat-icon>edit</mat-icon>
+					</button>
+					<button mat-mini-fab color="warn" class="tag-list-button">
+						<mat-icon>delete</mat-icon>
+					</button>
+			</mat-card-actions>
+			<mat-card-footer>
+				<mat-progress-bar mode="determinate" value="37"></mat-progress-bar>
+			</mat-card-footer>
+		</mat-card>
+	</div>
+</div>

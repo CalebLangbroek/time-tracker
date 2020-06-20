@@ -1,0 +1,22 @@
+$background: #767676;
+
+::-webkit-scrollbar {
+	width: 8px;
+
+	&-track {
+		display: none;
+
+		&-piece {
+			display: none;
+		}
+	}
+
+	&-thumb {
+		background: $background;
+		border-radius: 10px;
+
+		&:hover {
+			background: darken($color: $background, $amount: 10);
+		}
+	}
+}

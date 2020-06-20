@@ -1,0 +1,37 @@
+@import "../../scss/breakpoints";
+
+$padding: 10px;
+
+.tag-list {
+	&-container {
+		padding: $padding;
+	}
+
+	&-main {
+		display: grid;
+		align-items: flex-start;
+		row-gap: 20px;
+		column-gap: 20px;
+		grid-template-rows: auto;
+
+		@include bp("min", "") {
+			grid-template-columns: repeat(1, 1fr);
+		}
+
+		@include bp("min", "phone") {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		@include bp("min", "laptop") {
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+		@include bp("min", "desktop") {
+			grid-template-columns: repeat(4, 1fr);
+		}
+	}
+
+	&-button {
+		margin: 0 10px;
+	}
+}
