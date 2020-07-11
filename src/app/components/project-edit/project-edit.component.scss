@@ -1,0 +1,12 @@
+$padding: 10px;
+
+.project-edit {
+	&-container {
+		padding: $padding;
+	}
+
+	&-form {
+		display: flex;
+		flex-direction: column;
+	}
+}

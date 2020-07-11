@@ -4,10 +4,10 @@
 		<button
 			mat-raised-button
 			color="primary"
-			(click)="onNewTag()"
+			[routerLink]="['new']"
 		>
 			Add New Project
 		</button>
 	</div>
-	<app-project-list class="projects-list"></app-project-list>
+	<router-outlet></router-outlet>
 </div>

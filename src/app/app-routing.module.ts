@@ -7,6 +7,9 @@ import { AuthComponent } from './components/auth/auth.component';
 import { TagComponent } from './components/tag/tag.component';
 import { TagsComponent } from './components/tags/tags.component';
 import { ProjectsComponent } from './components/projects/projects.component';
+import { ProjectComponent } from './components/project/project.component';
+import { ProjectEditComponent } from './components/project-edit/project-edit.component';
+import { ProjectListComponent } from './components/project-list/project-list.component';
 
 const routes: Routes = [
 	{ path: '', pathMatch: 'full', component: HomeComponent, canActivate: [AuthGuard] },
@@ -14,7 +17,24 @@ const routes: Routes = [
 	{ path: 'signup', component: AuthComponent },
 	{ path: 'tags', component: TagsComponent, canActivate: [AuthGuard] },
 	{ path: 'tags/:id', component: TagComponent, canActivate: [AuthGuard] },
-	{ path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard] },
+	{ path: 'projects', component: ProjectsComponent, children: [
+		{
+			path: '',
+			component: ProjectListComponent
+		},
+		{
+			path: 'new',
+			component: ProjectEditComponent
+		},
+		{
+			path: ':id',
+			component: ProjectComponent
+		},
+		{
+			path: ':id/edit',
+			component: ProjectEditComponent
+		}
+	], canActivate: [AuthGuard] },
 	{ path: '**', component: HomeComponent, canActivate: [AuthGuard] }
 ];
 

@@ -36,6 +36,9 @@ import { TagListComponent } from './components/tag-list/tag-list.component';
 import { TagsComponent } from './components/tags/tags.component';
 import { ProjectsComponent } from './components/projects/projects.component';
 import { ProjectListComponent } from './components/project-list/project-list.component';
+import { ProjectComponent } from './components/project/project.component';
+import { ProjectEditComponent } from './components/project-edit/project-edit.component';
+import { SqueezePipe } from './pipes/squeeze.pipe';
 
 @NgModule({
 	declarations: [
@@ -52,7 +55,10 @@ import { ProjectListComponent } from './components/project-list/project-list.com
 		TagListComponent,
 		TagsComponent,
 		ProjectsComponent,
-		ProjectListComponent
+		ProjectListComponent,
+		ProjectComponent,
+		ProjectEditComponent,
+		SqueezePipe
 	],
 	imports: [
 		BrowserModule,

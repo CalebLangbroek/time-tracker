@@ -1,0 +1,64 @@
+<div class="project-edit-container">
+	<p *ngIf="!project">
+		Not a valid project.
+	</p>
+	<div>
+		<mat-card>
+			<mat-card-content>
+				<form class="project-edit-form" (ngSubmit)="onFormSubmit()">
+					<mat-form-field
+						class="project-edit-input"
+						appearance="outline"
+					>
+						<mat-label>Name</mat-label>
+						<input
+							type="text"
+							name="name"
+							[(ngModel)]="project.name"
+							matInput
+						/>
+					</mat-form-field>
+					<mat-form-field
+						class="project-edit-input"
+						appearance="outline"
+					>
+						<mat-label>Description</mat-label>
+						<textarea
+							name="desc"
+							rows="5"
+							[(ngModel)]="project.desc"
+							matInput
+						></textarea>
+					</mat-form-field>
+					<mat-form-field
+						class="project-edit-input"
+						appearance="outline"
+					>
+						<mat-label>Estimated Hours</mat-label>
+						<input
+							name="hours"
+							type="number"
+							[(ngModel)]="project.hours"
+							matInput
+						/>
+					</mat-form-field>
+					<mat-form-field
+						class="project-edit-input"
+						appearance="outline"
+					>
+						<mat-label>Color</mat-label>
+						<input
+							name="color"
+							type="color"
+							[(ngModel)]="project.color"
+							matInput
+						/>
+					</mat-form-field>
+					<button mat-button color="primary">
+						Save
+					</button>
+				</form>
+			</mat-card-content>
+		</mat-card>
+	</div>
+</div>
