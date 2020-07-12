@@ -1,13 +1,4 @@
 <div class="projects-container">
-	<div class="projects-header">
-		<h1>Projects</h1>
-		<button
-			mat-raised-button
-			color="primary"
-			[routerLink]="['new']"
-		>
-			Add New Project
-		</button>
-	</div>
+	<app-project-header></app-project-header>
 	<router-outlet></router-outlet>
 </div>

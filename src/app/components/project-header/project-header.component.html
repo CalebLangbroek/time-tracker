@@ -1,0 +1,56 @@
+<div [ngSwitch]="state">
+	<div
+		*ngSwitchCase="getProjectRouteStates().PROJECTS"
+		class="project-header-container"
+	>
+		<h1 *ngSwitchCase="getProjectRouteStates().PROJECTS">Projects</h1>
+		<button mat-raised-button color="primary" [routerLink]="['new']">
+			Add New Project
+		</button>
+	</div>
+	<div
+		*ngSwitchCase="getProjectRouteStates().NEW"
+		class="project-header-container"
+	>
+		<h1 *ngSwitchCase="getProjectRouteStates().NEW">New Project</h1>
+		<button mat-raised-button color="warn" [routerLink]="['/projects']">
+			Cancel
+		</button>
+	</div>
+	<div
+		*ngSwitchCase="getProjectRouteStates().PROJECT"
+		class="project-header-container"
+	>
+		<h1 *ngSwitchCase="getProjectRouteStates().PROJECT">Project</h1>
+		<div class="project-header-button-container">
+			<button
+				mat-raised-button
+				color="primary"
+				[routerLink]="[projectID, 'edit']"
+			>
+				Edit
+			</button>
+			<button
+				mat-raised-button
+				class="success-button"
+				[routerLink]="['/projects']"
+			>
+				Done
+			</button>
+		</div>
+	</div>
+	<div
+		*ngSwitchCase="getProjectRouteStates().EDIT"
+		class="project-header-container"
+	>
+		<h1 *ngSwitchCase="getProjectRouteStates().EDIT">Project Edit</h1>
+		<button
+			mat-raised-button
+			color="warn"
+			[routerLink]="['/projects', projectID]"
+		>
+			Cancel
+		</button>
+	</div>
+	<div *ngSwitchDefault>Invalid URL</div>
+</div>

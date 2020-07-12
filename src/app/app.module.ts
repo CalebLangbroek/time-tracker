@@ -39,6 +39,7 @@ import { ProjectListComponent } from './components/project-list/project-list.com
 import { ProjectComponent } from './components/project/project.component';
 import { ProjectEditComponent } from './components/project-edit/project-edit.component';
 import { SqueezePipe } from './pipes/squeeze.pipe';
+import { ProjectHeaderComponent } from './components/project-header/project-header.component';
 
 @NgModule({
 	declarations: [
@@ -58,7 +59,8 @@ import { SqueezePipe } from './pipes/squeeze.pipe';
 		ProjectListComponent,
 		ProjectComponent,
 		ProjectEditComponent,
-		SqueezePipe
+		SqueezePipe,
+		ProjectHeaderComponent
 	],
 	imports: [
 		BrowserModule,

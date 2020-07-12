@@ -2,7 +2,8 @@
 	<p *ngIf="!project">
 		Not a valid project.
 	</p>
-	<div>
+	<mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
+	<div *ngIf="!isLoading">
 		<mat-card>
 			<mat-card-content>
 				<form class="project-edit-form" (ngSubmit)="onFormSubmit()">
@@ -54,7 +55,7 @@
 							matInput
 						/>
 					</mat-form-field>
-					<button mat-button color="primary">
+					<button class="success-button" mat-button>
 						Save
 					</button>
 				</form>

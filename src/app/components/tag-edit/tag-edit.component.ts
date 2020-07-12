@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 import { TagService } from 'src/app/services/tag.service';
+import { Constants } from 'src/app/constants/constants';
 
 const TAG_MAX_LENGTH = 95;
-const DEFAULT_COLOR = '#ffffff';
 
 @Component({
 	selector: 'app-tag-edit',
@@ -12,7 +12,7 @@ const DEFAULT_COLOR = '#ffffff';
 })
 export class TagEditComponent implements OnInit {
 	tagName = '';
-	tagColor = DEFAULT_COLOR;
+	tagColor = Constants.DEFAULT_COLOR;
 	TAG_MAX_LENGTH = TAG_MAX_LENGTH;
 
 	constructor(private tagService: TagService) {}
@@ -23,7 +23,7 @@ export class TagEditComponent implements OnInit {
 		this.tagService.createTag(this.tagName, this.tagColor);
 
 		this.tagName = '';
-		this.tagColor = DEFAULT_COLOR;
+		this.tagColor = Constants.DEFAULT_COLOR;
 	}
 
 	onCancel() {
