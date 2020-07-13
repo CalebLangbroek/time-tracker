@@ -1,26 +1,26 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 import { Tag } from '../models/tag.model';
 import { TagApiService } from './tag-api.service';
 import { NotificationService } from './notification.service';
+import { AbstractDatabaseItemService } from './abstract/abstract-database-item.service';
+import { UtilsService } from './utils.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class TagService {
-	private tags: Tag[] = [];
-	tagsSubject = new BehaviorSubject<Tag[]>([]);
+export class TagService extends AbstractDatabaseItemService<Tag> {
 	isEditVisSubject = new BehaviorSubject<boolean>(false);
 
 	constructor(
-		private tagAPI: TagApiService,
-		private notification: NotificationService
+		private apiT: TagApiService,
+		private notificationServiceT: NotificationService,
+		private utilsT: UtilsService,
+		private authT: AuthService
 	) {
-		this.tagAPI.getTags().subscribe((resTags) => {
-			this.tags = resTags;
-			this.tagsSubject.next(this.tags);
-		}, this.handleAPIError.bind(this));
+		super(apiT, notificationServiceT, utilsT, authT);
 	}
 
 	/**
@@ -35,93 +35,5 @@ export class TagService {
 	 */
 	onCancelEdit() {
 		this.isEditVisSubject.next(false);
-	}
-
-	getTag(tagID: string): Observable<Tag> {
-		return new Observable<Tag>((sub) => {
-			// Try and find in tags array
-			const tag = this.tags.find((tag) => tag.id === tagID);
-
-			if (tag) {
-				// If tags are already loaded, find and return
-				sub.next(tag);
-				sub.complete();
-			} else {
-				// Otherwise return from server
-				this.tagAPI.getTag(tagID).subscribe((res) => {
-					sub.next(res);
-					sub.complete();
-				}, this.handleAPIError.bind(this));
-			}
-		});
-	}
-
-	createTag(name: string, color: string) {
-		const newTag: Tag = {
-			name,
-			color,
-		};
-
-		this.tagAPI.createTag(newTag).subscribe((resTag) => {
-			// Save with the new ID
-			newTag.id = resTag.name;
-
-			// Add to the list of tags
-			this.tags.unshift(newTag);
-
-			// Notify any subscribers
-			this.tagsSubject.next(this.tags);
-
-			// Send notification
-			this.notification.sendNotification({
-				message: 'Tag created',
-				type: 'success',
-			});
-		}, this.handleAPIError.bind(this));
-	}
-
-	updateTag(tag: Tag) {
-		const index = this.tags.findIndex((tempTag) => tempTag.id === tag.id);
-		this.tags[index] = tag;
-
-		this.tagAPI.updateTag(tag).subscribe(() => {
-			this.notification.sendNotification({
-				message: 'Tag saved',
-				type: 'success',
-			});
-		}, this.handleAPIError.bind(this));
-
-		this.tagsSubject.next(this.tags);
-	}
-
-	/**
-	 * Remove a tag from the array at a given index.
-	 * @param tagID ID of the tag to delete.
-	 */
-	deleteTag(tagID: string) {
-		this.tagAPI.deleteTag(tagID).subscribe(() => {
-			// Send notification
-			this.notification.sendNotification({
-				message: 'Tag deleted',
-				type: 'success',
-			});
-		}, this.handleAPIError.bind(this));
-
-		// Remove tag from local array
-		this.tags = this.tags.filter((tag) => tag.id !== tagID);
-
-		// Notify any subscribers
-		this.tagsSubject.next(this.tags);
-	}
-
-	/**
-	 * Send a new notification if an API error occurs.
-	 * @param err Error message as a string.
-	 */
-	private handleAPIError(err: string) {
-		this.notification.sendNotification({
-			message: err,
-			type: 'danger',
-		});
 	}
 }

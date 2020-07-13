@@ -1,6 +1,7 @@
 <div class="project-list-container">
-	<p *ngIf="projects.length == 0">
-		No projects
+	<mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
+	<p *ngIf="!isLoading && projects.length === 0">
+		It looks like you don't have any projects yet
 	</p>
 	<div class="project-list-main">
 		<mat-card *ngFor="let project of projects" class="project-list-project">

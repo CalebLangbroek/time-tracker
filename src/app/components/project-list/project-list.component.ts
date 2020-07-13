@@ -12,16 +12,27 @@ import { Project } from 'src/app/models/project.model';
 })
 export class ProjectListComponent implements OnInit, OnDestroy {
 	private projectSub: Subscription;
-	projects : Project[];
+	isLoading: boolean;
+	projects: Project[] = [];
 
 	constructor(private projectService: ProjectService) {}
 
 	ngOnInit() {
-		this.projects = this.projectService.itemsSubject.getValue();
+		this.isLoading = true;
 
-		this.projectSub = this.projectService.itemsSubject.subscribe(projects => {
-			this.projects = projects;
-		})
+		this.projectService.getAll().subscribe(
+			(projects) => {
+				this.projects = projects;
+			},
+			null,
+			() => (this.isLoading = false)
+		);
+
+		this.projectSub = this.projectService.itemsSubject.subscribe(
+			(projects) => {
+				this.projects = projects;
+			}
+		);
 	}
 
 	ngOnDestroy() {

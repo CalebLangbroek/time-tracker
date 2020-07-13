@@ -20,7 +20,7 @@ export class TagEditComponent implements OnInit {
 	ngOnInit() {}
 
 	onSave() {
-		this.tagService.createTag(this.tagName, this.tagColor);
+		this.tagService.create({name:this.tagName, color:this.tagColor});
 
 		this.tagName = '';
 		this.tagColor = Constants.DEFAULT_COLOR;

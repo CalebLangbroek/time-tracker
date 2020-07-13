@@ -1,3 +1,5 @@
+@import "../../scss/breakpoints";
+
 $padding: 10px;
 
 .project {
@@ -7,9 +9,17 @@ $padding: 10px;
 
 	&-main {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
 		grid-template-rows: auto;
-		gap: 10px;
+		row-gap: 20px;
+		column-gap: 20px;
 		align-items: flex-start;
+
+		@include bp("min", "") {
+			grid-template-columns: repeat(1, 1fr);
+		}
+
+		@include bp("min", "phone") {
+			grid-template-columns: repeat(2, 1fr);
+		}
 	}
 }

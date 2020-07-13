@@ -7,12 +7,12 @@ import { Tag } from 'src/app/models/tag.model';
 @Component({
 	selector: 'app-tag-list',
 	templateUrl: './tag-list.component.html',
-	styleUrls: ['./tag-list.component.scss']
+	styleUrls: ['./tag-list.component.scss'],
 })
 export class TagListComponent implements OnInit, OnDestroy {
 	private tagsSubs: Subscription;
 	isLoading: boolean;
-	tags: Tag[];
+	tags: Tag[] = [];
 	displayedColumns: string[] = ['name', 'color', 'delete', 'edit'];
 	tagsSubject: BehaviorSubject<Tag[]>;
 
@@ -20,17 +20,23 @@ export class TagListComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		// TODO: Add loading feature
-		this.isLoading = false;
+		this.isLoading = true;
 
-		// Get tags
-		this.tags = this.tagService.tagsSubject.getValue();
 		this.tagsSubject = new BehaviorSubject<Tag[]>(this.tags);
 
+		// Get tags
+		this.tagService
+			.getAll()
+			.subscribe(
+				this.onNextTags.bind(this),
+				null,
+				() => (this.isLoading = false)
+			);
+
 		// Subscribe to tag changes
-		this.tagsSubs = this.tagService.tagsSubject.subscribe(tags => {
-			this.tags = tags;
-			this.tagsSubject.next(this.tags);
-		});
+		this.tagsSubs = this.tagService.itemsSubject.subscribe(
+			this.onNextTags.bind(this)
+		);
 	}
 
 	ngOnDestroy() {
@@ -38,14 +44,19 @@ export class TagListComponent implements OnInit, OnDestroy {
 	}
 
 	onClickDelete(tagID: string) {
-		this.tagService.deleteTag(tagID);
+		this.tagService.delete(tagID);
 	}
 
 	onFilterKeyUp(input: string) {
 		this.tagsSubject.next(
-			this.tags.filter(tag =>
+			this.tags.filter((tag) =>
 				tag.name.toLocaleLowerCase().includes(input.toLocaleLowerCase())
 			)
 		);
+	}
+
+	onNextTags(tags: Tag[]) {
+		this.tags = tags;
+		this.tagsSubject.next(this.tags);
 	}
 }

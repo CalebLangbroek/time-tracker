@@ -5,6 +5,7 @@ import { AbstractDatabaseItemService } from './abstract/abstract-database-item.s
 import { ProjectApiService } from './project-api.service';
 import { NotificationService } from './notification.service';
 import { UtilsService } from './utils.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -13,8 +14,9 @@ export class ProjectService extends AbstractDatabaseItemService<Project> {
 	constructor(
 		private apiP: ProjectApiService,
 		private notificationServiceP: NotificationService,
-		private utilsP: UtilsService
+		private utilsP: UtilsService,
+		private authP: AuthService
 	) {
-		super(apiP, notificationServiceP, utilsP);
+		super(apiP, notificationServiceP, utilsP, authP);
 	}
 }

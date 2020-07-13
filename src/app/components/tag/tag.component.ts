@@ -32,7 +32,7 @@ export class TagComponent implements OnInit, OnDestroy {
 		this.isLoading = true;
 		this.tag.id = this.route.snapshot.params['id'];
 		this.tagSub = this.tagService
-			.getTag(this.tag.id)
+			.get(this.tag.id)
 			.subscribe(this.tagSubNextCallback.bind(this));
 	}
 
@@ -43,7 +43,7 @@ export class TagComponent implements OnInit, OnDestroy {
 	onSave(name: string, color: string) {
 		this.tag.name = name;
 		this.tag.color = color;
-		this.tagService.updateTag(this.tag);
+		this.tagService.update(this.tag);
 	}
 
 	private tagSubNextCallback(tag: Tag) {

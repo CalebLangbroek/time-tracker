@@ -43,11 +43,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
 		this.tracker.getEntries().finally(() => (this.isLoading = false));
 
-		this.tags = this.tagService.tagsSubject.getValue();
+		this.tagService.getAll().subscribe((tags) => (this.tags = tags));
 		this.tagsSubject = new BehaviorSubject<Tag[]>(this.tags);
 
 		// Get tags
-		this.tagsSubs = this.tagService.tagsSubject.subscribe((tags) => {
+		this.tagsSubs = this.tagService.itemsSubject.subscribe((tags) => {
 			this.tags = tags;
 			this.tagsSubject.next(this.tags);
 		});

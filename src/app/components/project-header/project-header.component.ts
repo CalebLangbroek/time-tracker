@@ -44,7 +44,13 @@ export class ProjectHeaderComponent implements OnInit, OnDestroy {
 	}
 
 	setStateOnURL(url: string): void {
-		const segments: UrlSegment[] = this.router.parseUrl(url).root.children[
+		const tree = this.router.parseUrl(url);
+
+		if (!tree.root.children[PRIMARY_OUTLET]) {
+			return;
+		}
+
+		const segments: UrlSegment[] = tree.root.children[
 			PRIMARY_OUTLET
 		].segments;
 
