@@ -18,7 +18,8 @@
 						[value]="timeEntry.name"
 						(change)="
 							onChangeName(
-								timeEntry.actualIndex,
+								dayIndex,
+								entryIndex,
 								timeEntryName.value
 							)
 						"
@@ -81,7 +82,7 @@
 				<div class="history-entry-delete" matTooltip="Click to delete">
 					<mat-icon
 						class="md-red"
-						(click)="onClickDelete(timeEntry.actualIndex)"
+						(click)="onClickDelete(dayIndex, entryIndex)"
 						>delete</mat-icon
 					>
 				</div>
@@ -101,7 +102,8 @@
 					class="history-form"
 					(ngSubmit)="
 						onSaveEntry(
-							timeEntry.actualIndex,
+							dayIndex,
+							entryIndex,
 							startTimeInput.value,
 							startDateInput.value,
 							endTimeInput.value,

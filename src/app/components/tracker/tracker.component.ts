@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { TrackerService } from 'src/app/services/tracker.service';
+import { EntryService } from 'src/app/services/entry.service';
 
 @Component({
 	selector: 'app-tracker',
@@ -11,16 +11,16 @@ export class TrackerComponent implements OnInit, OnDestroy {
 	isStarted: boolean;
 	trackerName: string;
 
-	constructor(public tracker: TrackerService) { }
+	constructor(public entryService: EntryService) { }
 
 	ngOnInit() {
-		this.isStarted = this.tracker.getTimerIsStarted();
-		this.trackerName = this.tracker.trackerName;
+		this.isStarted = this.entryService.getTimerIsStarted();
+		this.trackerName = this.entryService.trackerName;
 	}
 
 	ngOnDestroy() {
 		// Save the tracker name in persistent service
-		this.tracker.trackerName = this.trackerName;
+		this.entryService.trackerName = this.trackerName;
 	}
 
 	onStart() {
@@ -28,7 +28,7 @@ export class TrackerComponent implements OnInit, OnDestroy {
 		this.isStarted = true;
 
 		// Start the tracker
-		this.tracker.startTracker();
+		this.entryService.startTracker();
 	}
 
 	onStop() {
@@ -36,7 +36,7 @@ export class TrackerComponent implements OnInit, OnDestroy {
 		this.isStarted = false;
 
 		// Stop the tracker
-		this.tracker.stopTracker(this.trackerName);
+		this.entryService.stopTracker(this.trackerName);
 
 		// Reset the input field
 		this.trackerName = '';

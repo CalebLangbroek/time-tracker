@@ -2,10 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Subscription, BehaviorSubject } from 'rxjs';
 
-import { TrackerService } from 'src/app/services/tracker.service';
 import { TagService } from 'src/app/services/tag.service';
 import { Entry } from '../../models/entry.model';
 import { Tag } from 'src/app/models/tag.model';
+import { Constants } from 'src/app/constants/constants';
+import { EntryService } from 'src/app/services/entry.service';
 
 interface DayEntry {
 	duration: number;
@@ -18,17 +19,17 @@ interface DayEntry {
 	styleUrls: ['./history.component.scss'],
 })
 export class HistoryComponent implements OnInit, OnDestroy {
-	private entriesSubs: Subscription;
-	private tagsSubs: Subscription;
+	private entrySub: Subscription;
+	private tagSub: Subscription;
 	private tags: Tag[];
 	groupedEntries: DayEntry[];
 	isLoading: boolean;
 	tagsSubject: BehaviorSubject<Tag[]>;
-	ENTRY_LIMIT = 25;
+	ENTRY_LIMIT = Constants.ENTRY_LIMIT;
 	entryCount = 0;
 
 	constructor(
-		private tracker: TrackerService,
+		private entryService: EntryService,
 		private tagService: TagService
 	) {}
 
@@ -37,29 +38,37 @@ export class HistoryComponent implements OnInit, OnDestroy {
 		this.groupedEntries = [];
 
 		// Setup entry subscription
-		this.entriesSubs = this.tracker.entriesSubject.subscribe({
-			next: this.groupEntriesByDay.bind(this),
-		});
-
-		this.tracker.getEntries().finally(() => (this.isLoading = false));
+		this.entryService
+			.getAll()
+			.subscribe(
+				this.groupEntriesByDay.bind(this),
+				null,
+				() => (this.isLoading = false)
+			);
+		this.entrySub = this.entryService.itemsSubject.subscribe(
+			this.groupEntriesByDay.bind(this)
+		);
 
 		this.tagService.getAll().subscribe((tags) => (this.tags = tags));
 		this.tagsSubject = new BehaviorSubject<Tag[]>(this.tags);
 
 		// Get tags
-		this.tagsSubs = this.tagService.itemsSubject.subscribe((tags) => {
+		this.tagSub = this.tagService.itemsSubject.subscribe((tags) => {
 			this.tags = tags;
 			this.tagsSubject.next(this.tags);
 		});
 	}
 
 	ngOnDestroy() {
-		this.entriesSubs.unsubscribe();
-		this.tagsSubs.unsubscribe();
+		this.entrySub.unsubscribe();
+		this.tagSub.unsubscribe();
 	}
 
-	onChangeName(index: number, name: string) {
-		this.tracker.setEntryName(index, name);
+	onChangeName(dayIndex: number, entryIndex: number, name: string) {
+		this.groupedEntries[dayIndex].entries[entryIndex].name = name;
+		this.entryService.update(
+			this.groupedEntries[dayIndex].entries[entryIndex]
+		);
 	}
 
 	onChangeTagEdit(index: number, event: any) {
@@ -77,11 +86,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
 	}
 
 	onClickTagBadge(index: number) {
-		this.tracker.deleteEntryTag(index);
+		this.entryService.deleteEntryTag(index);
 	}
 
-	onClickDelete(index: number) {
-		this.tracker.deleteEntry(index);
+	onClickDelete(dayIndex: number, entryIndex: number) {
+		this.entryService.delete(
+			this.groupedEntries[dayIndex].entries[entryIndex].id
+		);
 	}
 
 	onClickEdit(dayIndex: number, entryIndex: number) {
@@ -90,19 +101,23 @@ export class HistoryComponent implements OnInit, OnDestroy {
 	}
 
 	onSaveEntry(
-		index: number,
+		dayIndex: number,
+		entryIndex: number,
 		startTime: string,
 		startDate: string,
 		endTime: string,
 		endDate: string
 	) {
-		this.tracker.setEntryStartEnd(
-			index,
-			startTime,
-			startDate,
-			endTime,
-			endDate
-		);
+		const start = new Date(`${startTime} ${startDate}`);
+		const end = new Date(`${endTime} ${endDate}`);
+		const duration = this.getDuration(start, end);
+
+		const entry = this.groupedEntries[dayIndex].entries[entryIndex];
+		entry.start = start;
+		entry.end = end;
+		entry.duration = duration;
+
+		this.entryService.update(entry);
 	}
 
 	/**
@@ -112,7 +127,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 	 * @param tag Tag to add to entry.
 	 */
 	private saveTag(index: number, tag: Tag) {
-		this.tracker.setEntryTag(index, tag);
+		this.entryService.addEntryTag(index, tag);
 	}
 
 	/**
@@ -170,5 +185,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
 		}
 
 		this.groupedEntries = groupedEntries;
+	}
+
+	/**
+	 * Calculate the duration of a entry.
+	 * @param start Starting date.
+	 * @param end Ending date.
+	 */
+	private getDuration(start: Date, end: Date): number {
+		return (end.getTime() - start.getTime()) / 1000;
 	}
 }

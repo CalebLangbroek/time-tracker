@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
@@ -20,21 +20,19 @@ export abstract class AbstractDatabaseItemApiService<
 		private baseURL: string
 	) {}
 
-	getAll(): Observable<T[]> {
+	getAll(params?: HttpParams): Observable<T[]> {
 		const user = this.auth.user.getValue();
 
-		return this.http
-			.get<T[]>(`${PROJECT_URL}/${this.baseURL}/${user.id}.json`)
-			.pipe(
-				map((res) => {
-					const result: T[] = [];
-					for (const key in res) {
-						result.push(this.convert(key, res[key]));
-					}
-					return result;
-				}),
-				catchError(this.utils.handleHTTPError.bind(this.utils))
-			);
+		return this.http.get<T[]>(`${PROJECT_URL}/${this.baseURL}/${user.id}.json`, {params}).pipe(
+			map((res) => {
+				const result: T[] = [];
+				for (const key in res) {
+					result.push(this.convert(key, res[key]));
+				}
+				return result;
+			}),
+			catchError(this.utils.handleHTTPError.bind(this.utils))
+		);
 	}
 
 	get(id: string): Observable<T> {
@@ -44,8 +42,7 @@ export abstract class AbstractDatabaseItemApiService<
 			.get<T>(`${PROJECT_URL}/${this.baseURL}/${user.id}/${id}.json`)
 			.pipe(
 				map((res) => {
-					res.id = id;
-					return res;
+					return this.convert(res.id, res);
 				}),
 				catchError(this.utils.handleHTTPError.bind(this.utils))
 			);
@@ -92,7 +89,7 @@ export abstract class AbstractDatabaseItemApiService<
 			.pipe(catchError(this.utils.handleHTTPError.bind(this.utils)));
 	}
 
-	private convert(id: string, item: T): T {
+	convert(id: string, item: T): T {
 		item.id = id;
 		return item;
 	}
