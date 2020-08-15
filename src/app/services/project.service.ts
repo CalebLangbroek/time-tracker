@@ -12,11 +12,11 @@ import { AuthService } from './auth.service';
 })
 export class ProjectService extends AbstractDatabaseItemService<Project> {
 	constructor(
-		private apiP: ProjectApiService,
-		private notificationServiceP: NotificationService,
-		private utilsP: UtilsService,
-		private authP: AuthService
+		protected api: ProjectApiService,
+		protected notificationService: NotificationService,
+		protected utils: UtilsService,
+		protected auth: AuthService
 	) {
-		super(apiP, notificationServiceP, utilsP, authP);
+		super(api, notificationService, utils, auth);
 	}
 }

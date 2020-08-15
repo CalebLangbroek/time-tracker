@@ -28,56 +28,58 @@
 					/>
 				</mat-form-field>
 
-				<div class="history-entry-tag">
-					<mat-chip-list
-						class="history-entry-tag-badge"
-						*ngIf="timeEntry.tag"
+				<mat-form-field class="history-entry-tags">
+					<mat-select
+						placeholder="Tags..."
+						[value]="timeEntry.tags"
+						[compareWith]="equalTags"
+						(selectionChange)="
+							onChangeTagEdit(timeEntry, timeEntryTag.value)
+						"
+						(openedChange)="onOpenedChangeTagEdit($event)"
+						multiple
+						#timeEntryTag
 					>
-						<mat-chip
-							matTooltip="Click to remove"
-							[ngStyle]="{
-								color: 'white',
-								'background-color': timeEntry.tag.color
-							}"
-							(click)="onClickTagBadge(timeEntry.actualIndex)"
-						>
-							{{ timeEntry.tag.name }}
-						</mat-chip>
-					</mat-chip-list>
-
-					<mat-form-field *ngIf="!timeEntry.tag">
 						<input
+							class="history-entry-tags-filter mat-option"
 							type="text"
-							placeholder="Tag"
-							(ngModelChange)="
-								onChangeTagEdit(timeEntry.actualIndex, $event)
-							"
-							(focus)="onFocusTagEdit(timeEntryTag.value)"
-							[ngModel]="currentTag"
-							[matAutocomplete]="timeEntryTagAuto"
-							#timeEntryTag
-							matInput
+							placeholder="Filter..."
+							(keyup)="onKeyupTagFilterEdit()"
+							[(ngModel)]="tagFilterValue"
 						/>
-						<mat-autocomplete #timeEntryTagAuto="matAutocomplete">
-							<mat-option
-								*ngFor="let tag of tagsSubject | async"
-								[value]="tag"
+						<mat-select-trigger>
+							<span
+								*ngFor="
+									let tag of timeEntryTag.value;
+									last as isLast
+								"
 							>
-								<mat-icon
-									matTooltip="{{ tag.color }}"
-									[ngStyle]="{ color: tag.color }"
-								>
-									<span>lens</span>
-								</mat-icon>
-								{{ tag.name }}
-							</mat-option>
-						</mat-autocomplete>
-					</mat-form-field>
+								{{ tag.name }}<span *ngIf="!isLast">,</span>
+							</span>
+						</mat-select-trigger>
+						<mat-option
+							*ngFor="let tag of tagsSubject | async"
+							[value]="tag"
+						>
+							<mat-icon
+								matTooltip="{{ tag.color }}"
+								[ngStyle]="{ color: tag.color }"
+							>
+								<span>lens</span>
+							</mat-icon>
+							{{ tag.name }}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+
+				<div class="history-entry-start-end">
+					{{ timeEntry.start | date: 'h:mm a' }} -
+					{{ timeEntry.end | date: 'h:mm a' }}
 				</div>
 
-				<div class="history-entry-duration">
+				<h4 class="history-entry-duration">
 					{{ timeEntry.duration | duration }}
-				</div>
+				</h4>
 
 				<div class="history-entry-delete" matTooltip="Click to delete">
 					<mat-icon

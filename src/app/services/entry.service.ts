@@ -18,12 +18,12 @@ export class EntryService extends AbstractDatabaseItemService<Entry> {
 
 	constructor(
 		private timer: TimerService,
-		private notificationServiceE: NotificationService,
-		private apiE: EntryApiService,
-		private utilsE: UtilsService,
-		private authE: AuthService
+		protected notificationService: NotificationService,
+		protected api: EntryApiService,
+		protected utils: UtilsService,
+		protected auth: AuthService
 	) {
-		super(apiE, notificationServiceE, utilsE, authE);
+		super(api, notificationService, utils, auth);
 	}
 
 	startTracker() {
@@ -55,34 +55,34 @@ export class EntryService extends AbstractDatabaseItemService<Entry> {
 		return this.timer.getDuration();
 	}
 
-	/**
-	 * Set the tag of an entry at a given index.
-	 * @param index Index of the entry to set.
-	 * @param tag Tag to set.
-	 */
-	addEntryTag(index: number, tag: Tag) {
-		// this.api.putEntryTag(this.entries[index], tag).subscribe(() => {
-		// 	// Send notification
-		// 	this.notification.sendNotification({
-		// 		message: 'Tag saved',
-		// 		type: 'success'
-		// 	});
-		// }, this.handleAPIError.bind(this));
+	addTag(entryID: string, tag: Tag): void {
+		const index = this.items.findIndex((entry) => entry.id === entryID);
+
+		if (!this.items[index].tags) {
+			this.items[index].tags = [];
+		}
+
+		this.items[index].tags.push(tag);
+
+		this.api.addTag(entryID, tag).subscribe(() => {
+			this.notificationService.sendNotification({
+				message: 'Tag added',
+				type: 'success',
+			});
+		}, this.utils.handleAPIError.bind(this.utils));
 	}
 
-	/**
-	 * Remove an entry from the array at a given index.
-	 * The re-sort the array.
-	 * @param index Index of the entry to delete
-	 */
-	deleteEntryTag(index: number) {
-		// this.api.deleteEntryTag(this.entries[index].id).subscribe(() => {
-		// 	// Send notification
-		// 	this.notification.sendNotification({
-		// 		message: 'Tag deleted',
-		// 		type: 'success'
-		// 	});
-		// }, this.handleAPIError.bind(this));
-		// this.entries[index].tag = undefined;
+	deleteTag(entryID: string, tagID: string): void {
+		const index = this.items.findIndex((entry) => entry.id === entryID);
+		this.items[index].tags = this.items[index].tags.filter(
+			(tag) => tag.id !== tagID
+		);
+
+		this.api.deleteTag(entryID, tagID).subscribe(() => {
+			this.notificationService.sendNotification({
+				message: 'Tag removed',
+				type: 'success',
+			});
+		}, this.utils.handleAPIError.bind(this.utils));
 	}
 }

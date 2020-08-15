@@ -19,6 +19,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -83,7 +85,9 @@ import { ProjectHeaderComponent } from './components/project-header/project-head
 		MatTableModule,
 		MatAutocompleteModule,
 		MatChipsModule,
-		MatProgressBarModule
+		MatProgressBarModule,
+		MatMenuModule,
+		MatSelectModule
 	],
 	providers: [
 		{

@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { UtilsService } from '../utils.service';
 import { NotificationService } from '../notification.service';
@@ -14,14 +14,14 @@ import { User } from 'src/app/models/user.model';
 export abstract class AbstractDatabaseItemService<
 	T extends GenericDatabaseItem
 > {
-	private items: T[] = [];
+	protected items: T[] = [];
 	itemsSubject = new Subject<T[]>();
 
 	constructor(
-		private api: AbstractDatabaseItemApiService<T>,
-		private notificationService: NotificationService,
-		private utils: UtilsService,
-		private authService: AuthService
+		protected api: AbstractDatabaseItemApiService<T>,
+		protected notificationService: NotificationService,
+		protected utils: UtilsService,
+		protected authService: AuthService
 	) {
 		this.getAll();
 		this.authService.user.subscribe(this.observeUser.bind(this));
@@ -65,7 +65,7 @@ export abstract class AbstractDatabaseItemService<
 	create(item: T) {
 		this.api.create(item).subscribe((res) => {
 			item.id = res.name;
-			this.items.unshift(item);
+			this.items.push(item);
 			this.itemsSubject.next(this.items);
 			this.notificationService.sendNotification({
 				message: 'Created',
@@ -74,18 +74,20 @@ export abstract class AbstractDatabaseItemService<
 		}, this.utils.handleAPIError.bind(this.utils));
 	}
 
-	update(item: T) {
+	update(item: T, isLocalOnly = false) {
 		const index = this.items.findIndex(
 			(tempItem) => tempItem.id === item.id
 		);
 		this.items[index] = item;
 
-		this.api.update(item).subscribe(() => {
-			this.notificationService.sendNotification({
-				message: 'Saved',
-				type: 'success',
-			});
-		}, this.utils.handleAPIError.bind(this.utils));
+		if (!isLocalOnly) {
+			this.api.update(item).subscribe(() => {
+				this.notificationService.sendNotification({
+					message: 'Saved',
+					type: 'success',
+				});
+			}, this.utils.handleAPIError.bind(this.utils));
+		}
 
 		this.itemsSubject.next(this.items);
 	}

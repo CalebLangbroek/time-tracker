@@ -15,12 +15,12 @@ export class TagService extends AbstractDatabaseItemService<Tag> {
 	isEditVisSubject = new BehaviorSubject<boolean>(false);
 
 	constructor(
-		private apiT: TagApiService,
-		private notificationServiceT: NotificationService,
-		private utilsT: UtilsService,
-		private authT: AuthService
+		protected api: TagApiService,
+		protected notificationService: NotificationService,
+		protected utils: UtilsService,
+		protected auth: AuthService
 	) {
-		super(apiT, notificationServiceT, utilsT, authT);
+		super(api, notificationService, utils, auth);
 	}
 
 	/**

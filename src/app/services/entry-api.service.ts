@@ -7,17 +7,21 @@ import { AuthService } from './auth.service';
 import { UtilsService } from './utils.service';
 import { Constants } from '../constants/constants';
 import { Tag } from '../models/tag.model';
+import { environment } from 'src/environments/environment';
+import { catchError } from 'rxjs/operators';
+
+const PROJECT_URL = environment.FIREBASE_PROJECT_URL;
 
 @Injectable({
 	providedIn: 'root',
 })
 export class EntryApiService extends AbstractDatabaseItemApiService<Entry> {
 	constructor(
-		private authE: AuthService,
-		private httpE: HttpClient,
-		private utilsE: UtilsService
+		protected auth: AuthService,
+		protected http: HttpClient,
+		protected utils: UtilsService
 	) {
-		super(authE, utilsE, httpE, 'entries');
+		super(auth, http, utils, 'entries');
 	}
 
 	getAll() {
@@ -28,36 +32,55 @@ export class EntryApiService extends AbstractDatabaseItemApiService<Entry> {
 		);
 	}
 
-	/**
-	 * Update an entry in the database.
-	 * @param entry New entry values.
-	 */
-	addEntryTag(entry: Entry, tag: Tag) {
-		// const user = this.auth.user.getValue();
-		// const entryId = entry.id;
+	addTag(entryID: string, tag: Tag) {
+		const user = this.auth.user.getValue();
 
-		// return this.http
-		// 	.patch(`${PROJECT_URL}/entries/${user.id}/${entryId}/tag.json`, tag)
-		// 	.pipe(catchError(this.handleError.bind(this)));
+		const newTag = {};
+		newTag[tag.id] = {
+			name: tag.name
+		};
+
+		return this.http
+			.patch(
+				`${PROJECT_URL}/${this.baseURL}/${user.id}/${entryID}/tags.json`,
+				newTag
+			)
+			.pipe(catchError(this.utils.handleHTTPError.bind(this.utils)));
 	}
 
-	deleteEntryTag(entryID: string) {
-		// const user = this.auth.user.getValue();
+	deleteTag(entryID: string, tagID: string) {
+		const user = this.auth.user.getValue();
 
-		// return this.http
-		// 	.delete(`${PROJECT_URL}/entries/${user.id}/${entryID}/tag.json`)
-		// 	.pipe(catchError(this.handleError.bind(this)));
+		return this.http
+			.delete(
+				`${PROJECT_URL}/${this.baseURL}/${user.id}/${entryID}/tags/${tagID}.json`
+			)
+			.pipe(catchError(this.utils.handleHTTPError.bind(this.utils)));
 	}
 
-	convert(id: string, item: Entry):Entry {
+	protected convert(id: string, item: Entry): Entry {
 		item.start = new Date(item.start);
 		item.end = new Date(item.end);
 		item.duration = (item.end.getTime() - item.start.getTime()) / 1000;
 
+		if (!item.tags) {
+			item.tags = [];
+		}
+
+		const tags: Tag[] = [];
+		for (const key in item.tags) {
+			tags.push({
+				id: key,
+				name: item.tags[key].name,
+				color: item.tags[key].color,
+			});
+		}
+		item.tags = tags;
+
 		return super.convert(id, item);
 	}
 
-	clearFields<Entry>(item: any): Entry {
+	protected clearFields<Entry>(item: any): Entry {
 		const entry: any = {
 			name: item.name,
 			start: item.start.getTime(),

@@ -6,7 +6,6 @@ export interface Entry {
 	duration: number;
 	start: Date;
 	end: Date;
-	tag?: Tag;
+	tags?: Tag[];
 	isOpen?: boolean;
-	actualIndex?: number;
 }

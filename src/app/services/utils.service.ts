@@ -15,7 +15,7 @@ export class UtilsService {
 	 * @param error Error to handle.
 	 * @returns Error message as an Observable.
 	 */
-	public handleHTTPError(error: HttpErrorResponse): Observable<string> {
+	handleHTTPError(error: HttpErrorResponse): Observable<string> {
 		if (error instanceof HttpErrorResponse) {
 			return throwError(error.error.error);
 		} else {
@@ -27,7 +27,7 @@ export class UtilsService {
 	 * Send a new notification if an API error occurs.
 	 * @param err Error message as a string.
 	 */
-	public handleAPIError(err: string):void {
+	handleAPIError(err: string): void {
 		this.notification.sendNotification({
 			message: err,
 			type: 'danger',

@@ -11,11 +11,11 @@ import { AbstractDatabaseItemApiService } from './abstract/abstract-database-ite
 })
 export class TagApiService extends AbstractDatabaseItemApiService<Tag> {
 	constructor(
-		private authT: AuthService,
-		private httpT: HttpClient,
-		private utilsT: UtilsService
+		protected auth: AuthService,
+		protected http: HttpClient,
+		protected utils: UtilsService
 	) {
-		super(authT, utilsT, httpT, 'tags');
+		super(auth, http, utils, 'tags');
 	}
 
 	clearFields<Tag>(item: any): Tag {

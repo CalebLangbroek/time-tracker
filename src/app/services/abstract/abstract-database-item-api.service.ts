@@ -14,10 +14,10 @@ export abstract class AbstractDatabaseItemApiService<
 	T extends GenericDatabaseItem
 > {
 	constructor(
-		private auth: AuthService,
-		private utils: UtilsService,
-		private http: HttpClient,
-		private baseURL: string
+		protected auth: AuthService,
+		protected http: HttpClient,
+		protected utils: UtilsService,
+		protected baseURL: string
 	) {}
 
 	getAll(params?: HttpParams): Observable<T[]> {
@@ -54,9 +54,10 @@ export abstract class AbstractDatabaseItemApiService<
 	 */
 	create(item: T): Observable<{ name: string }> {
 		const user = this.auth.user.getValue();
+		const resItem = this.clearFields(item);
 
 		return this.http
-			.post(`${PROJECT_URL}/${this.baseURL}/${user.id}.json`, item)
+			.post(`${PROJECT_URL}/${this.baseURL}/${user.id}.json`, resItem)
 			.pipe(catchError(this.utils.handleHTTPError.bind(this.utils)));
 	}
 
@@ -89,7 +90,7 @@ export abstract class AbstractDatabaseItemApiService<
 			.pipe(catchError(this.utils.handleHTTPError.bind(this.utils)));
 	}
 
-	convert(id: string, item: T): T {
+	protected convert(id: string, item: T): T {
 		item.id = id;
 		return item;
 	}
@@ -100,5 +101,5 @@ export abstract class AbstractDatabaseItemApiService<
 	 *
 	 * @param item Item who's fields need clearing.
 	 */
-	abstract clearFields<T>(item: T): T;
+	protected abstract clearFields<T>(item: T): T;
 }

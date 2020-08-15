@@ -7,6 +7,8 @@ import { Entry } from '../../models/entry.model';
 import { Tag } from 'src/app/models/tag.model';
 import { Constants } from 'src/app/constants/constants';
 import { EntryService } from 'src/app/services/entry.service';
+import { Project } from 'src/app/models/project.model';
+import { ProjectService } from 'src/app/services/project.service';
 
 interface DayEntry {
 	duration: number;
@@ -21,16 +23,21 @@ interface DayEntry {
 export class HistoryComponent implements OnInit, OnDestroy {
 	private entrySub: Subscription;
 	private tagSub: Subscription;
-	private tags: Tag[];
+	private projectSub: Subscription;
+	private tags: Tag[] = [];
+	private projects: Project[] = [];
 	groupedEntries: DayEntry[];
 	isLoading: boolean;
 	tagsSubject: BehaviorSubject<Tag[]>;
+	projectSubject: BehaviorSubject<Project[]>;
 	ENTRY_LIMIT = Constants.ENTRY_LIMIT;
 	entryCount = 0;
+	tagFilterValue = '';
 
 	constructor(
 		private entryService: EntryService,
-		private tagService: TagService
+		private tagService: TagService,
+		private projectService: ProjectService
 	) {}
 
 	ngOnInit() {
@@ -41,27 +48,33 @@ export class HistoryComponent implements OnInit, OnDestroy {
 		this.entryService
 			.getAll()
 			.subscribe(
-				this.groupEntriesByDay.bind(this),
+				this.onNextEntries.bind(this),
 				null,
 				() => (this.isLoading = false)
 			);
 		this.entrySub = this.entryService.itemsSubject.subscribe(
-			this.groupEntriesByDay.bind(this)
+			this.onNextEntries.bind(this)
 		);
 
-		this.tagService.getAll().subscribe((tags) => (this.tags = tags));
-		this.tagsSubject = new BehaviorSubject<Tag[]>(this.tags);
-
 		// Get tags
-		this.tagSub = this.tagService.itemsSubject.subscribe((tags) => {
-			this.tags = tags;
-			this.tagsSubject.next(this.tags);
-		});
+		this.tagsSubject = new BehaviorSubject<Tag[]>(this.tags);
+		this.tagSub = this.tagService.itemsSubject.subscribe(
+			this.onNextTags.bind(this)
+		);
+		this.tagService.getAll().subscribe(this.onNextTags.bind(this));
+
+		// Get projects
+		this.projectSubject = new BehaviorSubject<Project[]>(this.projects);
+		this.projectSub = this.projectService.itemsSubject.subscribe(
+			this.onNextProjects.bind(this)
+		);
+		this.projectService.getAll().subscribe(this.onNextProjects.bind(this));
 	}
 
 	ngOnDestroy() {
 		this.entrySub.unsubscribe();
 		this.tagSub.unsubscribe();
+		this.projectSub.unsubscribe();
 	}
 
 	onChangeName(dayIndex: number, entryIndex: number, name: string) {
@@ -71,22 +84,44 @@ export class HistoryComponent implements OnInit, OnDestroy {
 		);
 	}
 
-	onChangeTagEdit(index: number, event: any) {
-		if (event.id) {
-			// Have a tag, should save it
-			this.saveTag(index, event as Tag);
-		} else {
-			// Otherwise filter the list of tags
-			this.filterTagList(event as string);
+	onChangeTagEdit(entry: Entry, tags: Tag[]) {
+		if (!entry.tags) {
+			entry.tags = [];
 		}
+
+		if (entry.tags.length > tags.length) {
+			const tag = entry.tags.filter(
+				(tempTag) => !tags.includes(tempTag)
+			)[0];
+			this.entryService.deleteTag(entry.id, tag.id);
+		} else {
+			const tag = tags.filter(
+				(tempTag) => !entry.tags.includes(tempTag)
+			)[0];
+			this.entryService.addTag(entry.id, tag);
+		}
+
+		entry.tags = tags;
 	}
 
-	onFocusTagEdit(input: string) {
-		this.filterTagList(input);
+	/**
+	 * Filter tag names based on input.
+	 *
+	 * @param input String to filter tag names.
+	 */
+	onKeyupTagFilterEdit() {
+		this.tagsSubject.next(
+			this.tags.filter((tag) =>
+				tag.name
+					.toLocaleLowerCase()
+					.includes(this.tagFilterValue.toLocaleLowerCase())
+			)
+		);
 	}
 
-	onClickTagBadge(index: number) {
-		this.entryService.deleteEntryTag(index);
+	onOpenedChangeTagEdit(isOpen: boolean) {
+		this.tagFilterValue = '';
+		this.tagsSubject.next(this.tags);
 	}
 
 	onClickDelete(dayIndex: number, entryIndex: number) {
@@ -121,46 +156,23 @@ export class HistoryComponent implements OnInit, OnDestroy {
 	}
 
 	/**
-	 * Set the tag for an entry.
-	 *
-	 * @param index Index in the tracker service's entry array.
-	 * @param tag Tag to add to entry.
-	 */
-	private saveTag(index: number, tag: Tag) {
-		this.entryService.addEntryTag(index, tag);
-	}
-
-	/**
-	 * Filter tag names based on input.
-	 *
-	 * @param input String to filter tag names.
-	 */
-	private filterTagList(input: string) {
-		this.tagsSubject.next(
-			this.tags.filter((tag) =>
-				tag.name.toLocaleLowerCase().includes(input.toLocaleLowerCase())
-			)
-		);
-	}
-
-	/**
 	 * Group entries by day.
 	 * Entries for a day will be an array nested under the day.
 	 * Each day should have the total duration for that day.
 	 * @param entries Entries to group.
 	 */
-	private groupEntriesByDay(entries: Entry[]) {
-		const groupedEntries = [];
+	private onNextEntries(entries: Entry[]) {
+		entries = entries.sort(this.compareEntries);
+		const groupedEntries: DayEntry[] = [];
 		this.entryCount = entries.length;
+		const options = {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric',
+			weekday: 'long',
+		};
 
-		for (let i = 0; i < entries.length; i++) {
-			const entry = entries[i];
-			const options = {
-				year: 'numeric',
-				month: 'long',
-				day: 'numeric',
-				weekday: 'long',
-			};
+		for (const entry of entries) {
 			const dateStr = entry.start.toLocaleDateString('en-US', options);
 
 			if (!groupedEntries[dateStr]) {
@@ -171,7 +183,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
 				};
 			}
 
-			entry.actualIndex = i;
 			groupedEntries[dateStr].duration += entry.duration;
 			groupedEntries[dateStr].entries.push(entry);
 		}
@@ -187,6 +198,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
 		this.groupedEntries = groupedEntries;
 	}
 
+	private onNextTags(tags: Tag[]): void {
+		this.tags = tags;
+		this.tagsSubject.next(this.tags);
+	}
+
+	private onNextProjects(projects: Project[]): void {
+		this.projects = projects;
+		this.projectSubject.next(this.projects);
+	}
+
 	/**
 	 * Calculate the duration of a entry.
 	 * @param start Starting date.
@@ -194,5 +215,28 @@ export class HistoryComponent implements OnInit, OnDestroy {
 	 */
 	private getDuration(start: Date, end: Date): number {
 		return (end.getTime() - start.getTime()) / 1000;
+	}
+
+	/**
+	 * Compares two entries.
+	 * @param x First entry to be compared.
+	 * @param y Second entry to be compared.
+	 * @returns -1 if x is before y, 0 if x and y are equal, and 1 if y is before x.
+	 */
+	private compareEntries(x: Entry, y: Entry): number {
+		if (x.start.getTime() > y.start.getTime()) {
+			return -1;
+		}
+
+		if (x.start.getTime() < y.start.getTime()) {
+			return 1;
+		}
+
+		return 0;
+	}
+
+	private equalTags(x: Tag, y: Tag): boolean {
+		if (!x || !y) return false;
+		return x.id === y.id;
 	}
 }
