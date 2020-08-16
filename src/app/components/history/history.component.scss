@@ -10,9 +10,9 @@ $history-padding: 46px;
 
 // History main rows
 @mixin history-main-1-row {
-	grid-template-columns: 1fr 20% repeat(4, auto);
+	grid-template-columns: 1fr repeat(5, auto);
 	grid-template-rows: repeat(1, auto);
-	grid-template-areas: "name tags start-end duration delete edit";
+	grid-template-areas: "name project start-end duration delete edit";
 }
 
 @mixin history-main-4-row {
@@ -21,7 +21,7 @@ $history-padding: 46px;
 	grid-template-rows: repeat(2, auto);
 	grid-template-areas:
 		"name duration delete edit"
-		"tags tags tags tags";
+		"project start-end start-end .";
 }
 
 .history {
@@ -104,8 +104,15 @@ $history-padding: 46px;
 			grid-area: start-end;
 		}
 
+		&-project {
+			grid-area: project;
+
+			&-badge {
+				max-width: 20%;
+			}
+		}
+
 		&-tags {
-			grid-area: tags;
 			width: 100%;
 
 			&-filter {

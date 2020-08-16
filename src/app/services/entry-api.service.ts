@@ -9,6 +9,7 @@ import { Constants } from '../constants/constants';
 import { Tag } from '../models/tag.model';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs/operators';
+import { Project } from '../models/project.model';
 
 const PROJECT_URL = environment.FIREBASE_PROJECT_URL;
 
@@ -37,7 +38,7 @@ export class EntryApiService extends AbstractDatabaseItemApiService<Entry> {
 
 		const newTag = {};
 		newTag[tag.id] = {
-			name: tag.name
+			name: tag.name,
 		};
 
 		return this.http
@@ -58,10 +59,38 @@ export class EntryApiService extends AbstractDatabaseItemApiService<Entry> {
 			.pipe(catchError(this.utils.handleHTTPError.bind(this.utils)));
 	}
 
+	addProject(entryID: string, project: Project) {
+		const user = this.auth.user.getValue();
+		const newProject = this.clearProjectFields(project);
+
+		return this.http
+			.patch(
+				`${PROJECT_URL}/${this.baseURL}/${user.id}/${entryID}/project.json`,
+				newProject
+			)
+			.pipe(catchError(this.utils.handleHTTPError.bind(this.utils)));
+	}
+
+	deleteProject(entryID: string) {
+		const user = this.auth.user.getValue();
+
+		return this.http
+			.delete(
+				`${PROJECT_URL}/${this.baseURL}/${user.id}/${entryID}/project.json`
+			)
+			.pipe(catchError(this.utils.handleHTTPError.bind(this.utils)));
+	}
+
 	protected convert(id: string, item: Entry): Entry {
 		item.start = new Date(item.start);
 		item.end = new Date(item.end);
 		item.duration = (item.end.getTime() - item.start.getTime()) / 1000;
+
+		// Fill missing fields
+		if (item.project) {
+			item.project.desc = '';
+			item.project.hours = 0;
+		}
 
 		if (!item.tags) {
 			item.tags = [];
@@ -88,5 +117,13 @@ export class EntryApiService extends AbstractDatabaseItemApiService<Entry> {
 		};
 
 		return entry as Entry;
+	}
+
+	private clearProjectFields(project: Project): any {
+		return {
+			id: project.id,
+			name: project.name,
+			color: project.color,
+		};
 	}
 }

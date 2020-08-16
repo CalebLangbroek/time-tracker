@@ -28,6 +28,82 @@
 					/>
 				</mat-form-field>
 
+				<div class="history-entry-project">
+					<mat-chip-list
+						class="history-entry-project-badge"
+						*ngIf="timeEntry.project"
+					>
+						<mat-chip
+							matTooltip="Click to remove"
+							[ngStyle]="{
+								color: 'white',
+								'background-color': timeEntry.project.color
+							}"
+							(click)="onClickProjectBadge(timeEntry)"
+						>
+							{{ timeEntry.project.name }}
+						</mat-chip>
+					</mat-chip-list>
+
+					<mat-form-field *ngIf="!timeEntry.project">
+						<input
+							type="text"
+							placeholder="Project"
+							(ngModelChange)="
+								onChangeProjectEdit(timeEntry, $event)
+							"
+							(focus)="onFocusProjectEdit(timeEntryProject.value)"
+							[ngModel]="currentTag"
+							[matAutocomplete]="timeEntryProjectAuto"
+							#timeEntryProject
+							matInput
+						/>
+						<mat-autocomplete #timeEntryProjectAuto="matAutocomplete">
+							<mat-option
+								*ngFor="let project of projectSubject | async"
+								[value]="project"
+							>
+								<mat-icon
+									matTooltip="{{ project.color }}"
+									[ngStyle]="{ color: project.color }"
+								>
+									<span>lens</span>
+								</mat-icon>
+								{{ project.name }}
+							</mat-option>
+						</mat-autocomplete>
+					</mat-form-field>
+				</div>
+
+				<div class="history-entry-start-end">
+					{{ timeEntry.start | date: 'h:mm a' }} -
+					{{ timeEntry.end | date: 'h:mm a' }}
+				</div>
+
+				<h4 class="history-entry-duration">
+					{{ timeEntry.duration | duration }}
+				</h4>
+
+				<div class="history-entry-delete" matTooltip="Click to delete">
+					<mat-icon
+						class="md-red"
+						(click)="onClickDelete(dayIndex, entryIndex)"
+						>delete</mat-icon
+					>
+				</div>
+
+				<div class="history-entry-edit" matTooltip="Click to edit">
+					<mat-icon (click)="onClickEdit(dayIndex, entryIndex)">
+						<span *ngIf="!timeEntry.isOpen"
+							>keyboard_arrow_down</span
+						>
+						<span *ngIf="timeEntry.isOpen">keyboard_arrow_up</span>
+					</mat-icon>
+				</div>
+			</div>
+
+			<mat-card class="history-edit" *ngIf="timeEntry.isOpen">
+
 				<mat-form-field class="history-entry-tags">
 					<mat-select
 						placeholder="Tags..."
@@ -72,34 +148,6 @@
 					</mat-select>
 				</mat-form-field>
 
-				<div class="history-entry-start-end">
-					{{ timeEntry.start | date: 'h:mm a' }} -
-					{{ timeEntry.end | date: 'h:mm a' }}
-				</div>
-
-				<h4 class="history-entry-duration">
-					{{ timeEntry.duration | duration }}
-				</h4>
-
-				<div class="history-entry-delete" matTooltip="Click to delete">
-					<mat-icon
-						class="md-red"
-						(click)="onClickDelete(dayIndex, entryIndex)"
-						>delete</mat-icon
-					>
-				</div>
-
-				<div class="history-entry-edit" matTooltip="Click to edit">
-					<mat-icon (click)="onClickEdit(dayIndex, entryIndex)">
-						<span *ngIf="!timeEntry.isOpen"
-							>keyboard_arrow_down</span
-						>
-						<span *ngIf="timeEntry.isOpen">keyboard_arrow_up</span>
-					</mat-icon>
-				</div>
-			</div>
-
-			<mat-card class="history-edit" *ngIf="timeEntry.isOpen">
 				<form
 					class="history-form"
 					(ngSubmit)="

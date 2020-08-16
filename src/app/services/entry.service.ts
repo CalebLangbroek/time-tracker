@@ -8,6 +8,7 @@ import { NotificationService } from './notification.service';
 import { AuthService } from './auth.service';
 import { EntryApiService } from './entry-api.service';
 import { Tag } from '../models/tag.model';
+import { Project } from '../models/project.model';
 
 @Injectable({
 	providedIn: 'root',
@@ -81,6 +82,30 @@ export class EntryService extends AbstractDatabaseItemService<Entry> {
 		this.api.deleteTag(entryID, tagID).subscribe(() => {
 			this.notificationService.sendNotification({
 				message: 'Tag removed',
+				type: 'success',
+			});
+		}, this.utils.handleAPIError.bind(this.utils));
+	}
+
+	addProject(entryID: string, project: Project) {
+		const index = this.items.findIndex((entry) => entry.id === entryID);
+		this.items[index].project = project;
+
+		this.api.addProject(entryID, project).subscribe(() => {
+			this.notificationService.sendNotification({
+				message: 'Project added',
+				type: 'success',
+			});
+		}, this.utils.handleAPIError.bind(this.utils));
+	}
+
+	deleteProject(entryID: string) {
+		const index = this.items.findIndex((entry) => entry.id === entryID);
+		this.items[index].project = null;
+
+		this.api.deleteProject(entryID).subscribe(() => {
+			this.notificationService.sendNotification({
+				message: 'Project removed',
 				type: 'success',
 			});
 		}, this.utils.handleAPIError.bind(this.utils));

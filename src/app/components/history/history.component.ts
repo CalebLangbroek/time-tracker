@@ -84,6 +84,28 @@ export class HistoryComponent implements OnInit, OnDestroy {
 		);
 	}
 
+	onChangeProjectEdit(entry: Entry, event: any) {
+		if (event.id) {
+			this.entryService.addProject(entry.id, event as Project);
+		} else {
+			this.onFocusProjectEdit(event as string);
+		}
+	}
+
+	onFocusProjectEdit(input: string) {
+		this.projectSubject.next(
+			this.projects.filter((project) =>
+				project.name
+					.toLocaleLowerCase()
+					.includes(input.toLocaleLowerCase())
+			)
+		);
+	}
+
+	onClickProjectBadge(entry: Entry) {
+		this.entryService.deleteProject(entry.id);
+	}
+
 	onChangeTagEdit(entry: Entry, tags: Tag[]) {
 		if (!entry.tags) {
 			entry.tags = [];
