@@ -77,11 +77,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
 		this.projectSub.unsubscribe();
 	}
 
-	onChangeName(dayIndex: number, entryIndex: number, name: string) {
-		this.groupedEntries[dayIndex].entries[entryIndex].name = name;
-		this.entryService.update(
-			this.groupedEntries[dayIndex].entries[entryIndex]
-		);
+	onChangeName(entry: Entry, name: string) {
+		entry.name = name;
+		this.entryService.update(entry);
 	}
 
 	onChangeProjectEdit(entry: Entry, event: any) {
@@ -146,20 +144,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
 		this.tagsSubject.next(this.tags);
 	}
 
-	onClickDelete(dayIndex: number, entryIndex: number) {
-		this.entryService.delete(
-			this.groupedEntries[dayIndex].entries[entryIndex].id
-		);
+	onClickDelete(entry: Entry) {
+		this.entryService.delete(entry.id);
 	}
 
-	onClickEdit(dayIndex: number, entryIndex: number) {
-		const entry = this.groupedEntries[dayIndex].entries[entryIndex];
+	onClickEdit(entry: Entry) {
 		entry.isOpen = !entry.isOpen;
 	}
 
 	onSaveEntry(
-		dayIndex: number,
-		entryIndex: number,
+		entry: Entry,
 		startTime: string,
 		startDate: string,
 		endTime: string,
@@ -169,7 +163,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
 		const end = new Date(`${endTime} ${endDate}`);
 		const duration = this.getDuration(start, end);
 
-		const entry = this.groupedEntries[dayIndex].entries[entryIndex];
 		entry.start = start;
 		entry.end = end;
 		entry.duration = duration;

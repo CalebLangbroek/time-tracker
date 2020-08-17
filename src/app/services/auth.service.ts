@@ -6,27 +6,12 @@ import { catchError, map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { User } from '../models/user.model';
+import { Constants } from '../constants/constants';
+import { AuthErrorCodes } from '../enums/auth-error-codes.enum';
+import { UserResponse } from '../models/user-response.model';
 
 const SIGN_UP_ENDPOINT = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.FIREBASE_API_KEY}`;
 const SIGN_IN_ENDPOINT = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.FIREBASE_API_KEY}`;
-const USER_DATA_KEY = 'userData';
-
-interface UserResponse {
-	idToken: string;
-	email: string;
-	refreshToken: string;
-	expiresIn: string;
-	localId: string;
-	registered?: boolean;
-}
-
-enum AuthErrorCodes {
-	EMAIL_EXISTS = 'This email already exists',
-	TOO_MANY_ATTEMPTS_TRY_LATER = 'Too many attempts',
-	EMAIL_NOT_FOUND = 'Email not found',
-	INVALID_PASSWORD = 'Invalid password',
-	USER_DISABLED = 'User disabled'
-}
 
 @Injectable({
 	providedIn: 'root'
@@ -55,7 +40,7 @@ export class AuthService {
 	 * Get the user's token from local storage and sign them in with it.
 	 */
 	signInFromLocalStorage() {
-		const userJson = JSON.parse(localStorage.getItem(USER_DATA_KEY));
+		const userJson = JSON.parse(localStorage.getItem(Constants.USER_DATA_KEY));
 
 		if (!userJson) {
 			return;
@@ -92,7 +77,7 @@ export class AuthService {
 	 */
 	signOut(): void {
 		this.user.next(null);
-		localStorage.removeItem(USER_DATA_KEY);
+		localStorage.removeItem(Constants.USER_DATA_KEY);
 		clearTimeout(this.tokenExpiryTimer);
 		this.router.navigate(['/signin']);
 	}
@@ -161,7 +146,7 @@ export class AuthService {
 		this.startTokenExpiryTimer(expiresIn);
 
 		this.user.next(user);
-		localStorage.setItem(USER_DATA_KEY, JSON.stringify(user));
+		localStorage.setItem(Constants.USER_DATA_KEY, JSON.stringify(user));
 	}
 
 	/**

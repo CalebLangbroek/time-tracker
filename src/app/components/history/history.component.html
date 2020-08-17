@@ -3,26 +3,20 @@
 	<div *ngIf="!isLoading && groupedEntries.length == 0">
 		It looks like you don't have any entries yet
 	</div>
-	<div *ngFor="let date of groupedEntries; index as dayIndex">
+	<div *ngFor="let date of groupedEntries">
 		<h3>{{ date.dateStr }}</h3>
 		<p>{{ date.duration | duration }}</p>
 		<mat-divider></mat-divider>
 		<mat-card
 			class="history-entry mat-elevation-z8"
-			*ngFor="let timeEntry of date.entries; index as entryIndex"
+			*ngFor="let timeEntry of date.entries"
 		>
 			<div class="history-main">
 				<mat-form-field class="history-entry-name">
 					<input
 						type="text"
 						[value]="timeEntry.name"
-						(change)="
-							onChangeName(
-								dayIndex,
-								entryIndex,
-								timeEntryName.value
-							)
-						"
+						(change)="onChangeName(timeEntry, timeEntryName.value)"
 						#timeEntryName
 						matInput
 					/>
@@ -58,7 +52,9 @@
 							#timeEntryProject
 							matInput
 						/>
-						<mat-autocomplete #timeEntryProjectAuto="matAutocomplete">
+						<mat-autocomplete
+							#timeEntryProjectAuto="matAutocomplete"
+						>
 							<mat-option
 								*ngFor="let project of projectSubject | async"
 								[value]="project"
@@ -85,15 +81,13 @@
 				</h4>
 
 				<div class="history-entry-delete" matTooltip="Click to delete">
-					<mat-icon
-						class="md-red"
-						(click)="onClickDelete(dayIndex, entryIndex)"
+					<mat-icon class="md-red" (click)="onClickDelete(timeEntry)"
 						>delete</mat-icon
 					>
 				</div>
 
 				<div class="history-entry-edit" matTooltip="Click to edit">
-					<mat-icon (click)="onClickEdit(dayIndex, entryIndex)">
+					<mat-icon (click)="onClickEdit(timeEntry)">
 						<span *ngIf="!timeEntry.isOpen"
 							>keyboard_arrow_down</span
 						>
@@ -103,7 +97,6 @@
 			</div>
 
 			<mat-card class="history-edit" *ngIf="timeEntry.isOpen">
-
 				<mat-form-field class="history-entry-tags">
 					<mat-select
 						placeholder="Tags..."
@@ -152,8 +145,7 @@
 					class="history-form"
 					(ngSubmit)="
 						onSaveEntry(
-							dayIndex,
-							entryIndex,
+							timeEntry,
 							startTimeInput.value,
 							startDateInput.value,
 							endTimeInput.value,
