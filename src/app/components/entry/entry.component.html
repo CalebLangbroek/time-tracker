@@ -1,0 +1,186 @@
+<mat-card class="entry-container mat-elevation-z8">
+	<div class="entry-main">
+		<mat-form-field class="entry-main-name">
+			<input
+				type="text"
+				[(ngModel)]="entry.name"
+				(change)="onNameChange()"
+				matInput
+			/>
+		</mat-form-field>
+
+		<div class="entry-main-project">
+			<mat-chip-list
+				class="entry-main-project-badge"
+				*ngIf="entry.project"
+			>
+				<mat-chip
+					matTooltip="Click to remove"
+					[ngStyle]="{
+						color: 'white',
+						'background-color': entry.project.color
+					}"
+					(click)="onProjectBadgeClick()"
+				>
+					{{ entry.project.name }}
+				</mat-chip>
+			</mat-chip-list>
+
+			<mat-form-field *ngIf="!entry.project">
+				<input
+					type="text"
+					placeholder="Project..."
+					(ngModelChange)="onProjectChange($event)"
+					(ngModelFocus)="onProjectFocus($event)"
+					[ngModel]="projectInput"
+					[matAutocomplete]="projectProjectAuto"
+					matInput
+				/>
+				<mat-autocomplete #projectProjectAuto="matAutocomplete">
+					<mat-option
+						*ngFor="let project of projectSubject | async"
+						[value]="project"
+					>
+						<mat-icon
+							matTooltip="{{ project.color }}"
+							[ngStyle]="{ color: project.color }"
+						>
+							<span>lens</span>
+						</mat-icon>
+						{{ project.name }}
+					</mat-option>
+				</mat-autocomplete>
+			</mat-form-field>
+		</div>
+
+		<div class="entry-main-start-end">
+			{{ entry.start | date: 'h:mm a' }} -
+			{{ entry.end | date: 'h:mm a' }}
+		</div>
+
+		<h4 class="entry-main-duration">
+			{{ entry.duration | duration }}
+		</h4>
+
+		<div class="entry-main-delete" matTooltip="Click to delete">
+			<mat-icon class="md-red" (click)="onDeleteClick()">delete</mat-icon>
+		</div>
+
+		<div class="entry-main-edit" matTooltip="Click to edit">
+			<mat-icon (click)="onEditClick()">
+				<span *ngIf="!isOpen">keyboard_arrow_down</span>
+				<span *ngIf="isOpen">keyboard_arrow_up</span>
+			</mat-icon>
+		</div>
+	</div>
+
+	<mat-card class="entry-more" *ngIf="isOpen">
+		<mat-form-field class="entry-more-tags">
+			<mat-select
+				placeholder="Tags..."
+				[value]="entry.tags"
+				[compareWith]="equalTags"
+				(selectionChange)="onTagsChange(entryTagsSelect.value)"
+				(openedChange)="onTagsOpenedChange()"
+				multiple
+				#entryTagsSelect
+			>
+				<input
+					class="entry-more-tags-filter mat-option"
+					type="text"
+					placeholder="Filter..."
+					(keyup)="onTagFilterKeyup()"
+					[(ngModel)]="tagFilterValue"
+				/>
+				<mat-select-trigger>
+					<span *ngFor="let tag of entry.tags; last as isLast">
+						{{ tag.name }}<span *ngIf="!isLast">,</span>
+					</span>
+				</mat-select-trigger>
+				<mat-option
+					*ngFor="let tag of tagsSubject | async"
+					[value]="tag"
+				>
+					<mat-icon
+						matTooltip="{{ tag.color }}"
+						[ngStyle]="{ color: tag.color }"
+					>
+						<span>lens</span>
+					</mat-icon>
+					{{ tag.name }}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+
+		<form
+			class="entry-more-form"
+			(ngSubmit)="
+				onEntrySubmit(
+					startTimeInput.value,
+					startDateInput.value,
+					endTimeInput.value,
+					endDateInput.value
+				)
+			"
+		>
+			<mat-form-field>
+				<input
+					[type]="'time'"
+					[value]="entry.start | date: 'HH:mm'"
+					placeholder="Start Time"
+					#startTimeInput
+					matInput
+				/>
+			</mat-form-field>
+
+			<mat-form-field>
+				<input
+					[matDatepicker]="startDatePicker"
+					placeholder="Start Date"
+					[value]="entry.start"
+					required
+					#startDateInput
+					matInput
+				/>
+				<mat-datepicker-toggle
+					matSuffix
+					[for]="startDatePicker"
+				></mat-datepicker-toggle>
+				<mat-datepicker #startDatePicker></mat-datepicker>
+			</mat-form-field>
+
+			<mat-form-field>
+				<input
+					[type]="'time'"
+					[value]="entry.end | date: 'HH:mm'"
+					placeholder="End Time"
+					#endTimeInput
+					matInput
+				/>
+			</mat-form-field>
+
+			<mat-form-field>
+				<input
+					[matDatepicker]="endDatePicker"
+					placeholder="End Date"
+					[value]="entry.end"
+					#endDateInput
+					matInput
+				/>
+				<mat-datepicker-toggle
+					matSuffix
+					[for]="endDatePicker"
+				></mat-datepicker-toggle>
+				<mat-datepicker #endDatePicker></mat-datepicker>
+			</mat-form-field>
+
+			<button
+				mat-raised-button
+				class="entry-more-form-submit"
+				color="primary"
+			>
+				Save
+			</button>
+		</form>
+	</mat-card>
+</mat-card>

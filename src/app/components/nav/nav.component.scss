@@ -13,6 +13,15 @@ $padding: 10px;
 		overflow-x: hidden;
 	}
 
+	&-title {
+		user-select: none;
+		cursor: pointer;
+
+		&:focus {
+			outline: none;
+		}
+	}
+
 	&-text {
 		color: white;
 	}

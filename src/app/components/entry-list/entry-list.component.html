@@ -1,0 +1,23 @@
+<div class="entry-list-container">
+	<mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
+	<div *ngIf="!isLoading && groupedEntries.length == 0">
+		It looks like you don't have any entries yet
+	</div>
+	<div *ngFor="let date of groupedEntries">
+		<h3>{{ date.dateStr }}</h3>
+		<p>{{ date.duration | duration }}</p>
+		<mat-divider></mat-divider>
+		<app-entry
+			*ngFor="let entryEl of date.entries"
+			[entry]="entryEl"
+		></app-entry>
+	</div>
+	<div
+		class="entry-list-load-more"
+		*ngIf="!isLoading && entryCount === ENTRY_LIMIT"
+	>
+		<button mat-raised-button color="primary">
+			Load More
+		</button>
+	</div>
+</div>

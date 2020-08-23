@@ -27,7 +27,6 @@ import { AppComponent } from './app.component';
 import { NavComponent } from './components/nav/nav.component';
 import { HomeComponent } from './components/home/home.component';
 import { TrackerComponent } from './components/tracker/tracker.component';
-import { HistoryComponent } from './components/history/history.component';
 import { DurationPipe } from './pipes/duration.pipe';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 import { AuthComponent } from './components/auth/auth.component';
@@ -42,6 +41,9 @@ import { ProjectComponent } from './components/project/project.component';
 import { ProjectEditComponent } from './components/project-edit/project-edit.component';
 import { SqueezePipe } from './pipes/squeeze.pipe';
 import { ProjectHeaderComponent } from './components/project-header/project-header.component';
+import { EntryComponent } from './components/entry/entry.component';
+import { EntriesComponent } from './components/entries/entries.component';
+import { EntryListComponent } from './components/entry-list/entry-list.component';
 
 @NgModule({
 	declarations: [
@@ -49,7 +51,6 @@ import { ProjectHeaderComponent } from './components/project-header/project-head
 		NavComponent,
 		HomeComponent,
 		TrackerComponent,
-		HistoryComponent,
 		DurationPipe,
 		NotificationsComponent,
 		AuthComponent,
@@ -62,7 +63,10 @@ import { ProjectHeaderComponent } from './components/project-header/project-head
 		ProjectComponent,
 		ProjectEditComponent,
 		SqueezePipe,
-		ProjectHeaderComponent
+		ProjectHeaderComponent,
+		EntryComponent,
+		EntriesComponent,
+		EntryListComponent
 	],
 	imports: [
 		BrowserModule,

@@ -9,5 +9,4 @@ export interface Entry {
 	end: Date;
 	tags?: Tag[];
 	project?: Project;
-	isOpen?: boolean;
 }

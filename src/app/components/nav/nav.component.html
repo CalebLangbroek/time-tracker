@@ -2,17 +2,18 @@
 	<div class="nav-close" (click)="onCloseNav()">
 		<mat-icon class="md-light">close</mat-icon>
 	</div>
-	<h1 class="nav-title">Time Tracker</h1>
+	<h1 class="nav-title" [routerLink]="['/']">Time Tracker</h1>
 	<div class="nav-signedin-container" *ngIf="isSignedIn">
 		<mat-nav-list>
 			<mat-list-item>
 				<a
 					class="nav-link"
-					[routerLink]="['/']"
+					[routerLink]="['/entries']"
 					[routerLinkActive]="'nav-link-active'"
-					[routerLinkActiveOptions]="{ exact: true }"
 				>
-					<mat-icon mat-list-icon class="md-light nav-icon">timer</mat-icon>
+					<mat-icon mat-list-icon class="md-light nav-icon"
+						>timer</mat-icon
+					>
 					<p mat-line class="nav-text">Timer</p>
 				</a>
 			</mat-list-item>
@@ -22,7 +23,9 @@
 					[routerLink]="['/tags']"
 					[routerLinkActive]="'nav-link-active'"
 				>
-					<mat-icon mat-list-icon class="md-light nav-icon">bookmark</mat-icon>
+					<mat-icon mat-list-icon class="md-light nav-icon"
+						>bookmark</mat-icon
+					>
 					<p mat-line class="nav-text">Tags</p>
 				</a>
 			</mat-list-item>
@@ -32,7 +35,9 @@
 					[routerLink]="['/projects']"
 					[routerLinkActive]="'nav-link-active'"
 				>
-					<mat-icon mat-list-icon class="md-light nav-icon">work</mat-icon>
+					<mat-icon mat-list-icon class="md-light nav-icon"
+						>work</mat-icon
+					>
 					<p mat-line class="nav-text">Projects</p>
 				</a>
 			</mat-list-item>

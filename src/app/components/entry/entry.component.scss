@@ -1,0 +1,125 @@
+@import "../../scss/breakpoints";
+
+// Colors
+$cardbg: rgb(250, 250, 250);
+$green: rgb(40, 167, 69);
+
+// Sizing
+$padding: 10px;
+
+// main rows
+@mixin entry-main-1-row {
+	grid-template-columns: 1fr repeat(5, auto);
+	grid-template-rows: repeat(1, auto);
+	grid-template-areas: "name project start-end duration delete edit";
+}
+
+@mixin entry-main-4-row {
+	margin-bottom: 5px;
+	grid-template-columns: 1fr repeat(3, auto);
+	grid-template-rows: repeat(2, auto);
+	grid-template-areas:
+		"name duration delete edit"
+		"project start-end start-end .";
+}
+
+.entry {
+	&-container {
+		margin: 10px;
+
+		&:hover,
+		&:active {
+			background-color: darken($cardbg, 5%);
+		}
+	}
+
+	&-main {
+		display: grid;
+		align-items: center;
+		row-gap: 5px;
+		column-gap: 20px;
+
+		@include bp("min", "") {
+			@include entry-main-4-row;
+		}
+
+		@include bp("min", "phone") {
+			@include entry-main-1-row;
+		}
+
+		@include bp("min", "tablet") {
+			@include entry-main-4-row;
+		}
+
+		@include bp("min", "laptop") {
+			@include entry-main-1-row;
+		}
+
+		&-name {
+			grid-area: name;
+		}
+
+		&-start-end {
+			grid-area: start-end;
+		}
+
+		&-project {
+			grid-area: project;
+
+			&-badge {
+				max-width: 20%;
+			}
+		}
+
+		&-duration {
+			grid-area: duration;
+		}
+
+		&-delete {
+			grid-area: delete;
+		}
+
+		&-edit {
+			grid-area: edit;
+		}
+	}
+
+	&-more {
+		background: darken($cardbg, 10%);
+
+		&-tags {
+			width: 100%;
+
+			&-filter {
+				width: 100%;
+			}
+		}
+
+		&-form {
+			display: grid;
+			align-items: center;
+			row-gap: 5px;
+			column-gap: 10px;
+
+			@include bp("min", "") {
+				grid-template-columns: auto;
+				grid-template-rows: repeat(5, auto);
+			}
+
+			@include bp("min", "phone") {
+				grid-template-columns: repeat(2, auto);
+				grid-template-rows: repeat(3, auto);
+			}
+
+			@include bp("min", "desktop") {
+				grid-template-columns: repeat(5, auto);
+				grid-template-rows: auto;
+			}
+
+			&-submit {
+				background-color: $green;
+				width: fit-content;
+			}
+		}
+	}
+}

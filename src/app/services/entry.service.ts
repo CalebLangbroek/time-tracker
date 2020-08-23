@@ -42,7 +42,6 @@ export class EntryService extends AbstractDatabaseItemService<Entry> {
 			duration,
 			start: this.startDate,
 			end: new Date(),
-			isOpen: false,
 		};
 
 		super.create(entry);

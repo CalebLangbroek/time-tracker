@@ -1,0 +1,22 @@
+@import "../../scss/breakpoints";
+
+// Sizing
+$padding: 10px;
+$history-padding: 46px;
+
+.entry-list {
+	&-container {
+		padding: $padding;
+
+		@include bp("max", "tablet") {
+			// To account for nav toggle button at top on mobile
+			margin-bottom: $history-padding;
+		}
+	}
+
+	&-load-more {
+		padding: 10px;
+		display: flex;
+		justify-content: center;
+	}
+}
