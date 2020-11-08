@@ -12,9 +12,10 @@ import { UserResponse } from '../models/user-response.model';
 
 const SIGN_UP_ENDPOINT = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.FIREBASE_API_KEY}`;
 const SIGN_IN_ENDPOINT = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.FIREBASE_API_KEY}`;
+const REFRESH_ENDPOINT = `https://securetoken.googleapis.com/v1/token?key=${environment.FIREBASE_API_KEY}`;
 
 @Injectable({
-	providedIn: 'root'
+	providedIn: 'root',
 })
 export class AuthService {
 	user = new BehaviorSubject<User>(null);
@@ -50,7 +51,8 @@ export class AuthService {
 			userJson.id,
 			userJson.email,
 			userJson.token,
-			new Date(userJson.expiryDate)
+			new Date(userJson.expiryDate),
+			userJson.refreshToken
 		);
 
 		if (user.getToken()) {
@@ -129,7 +131,13 @@ export class AuthService {
 			new Date().getTime() + +res.expiresIn * 1000
 		);
 
-		const user = new User(res.localId, res.email, res.idToken, expiresIn);
+		const user = new User(
+			res.localId,
+			res.email,
+			res.idToken,
+			expiresIn,
+			res.refreshToken
+		);
 
 		this.authenticateUser(user);
 
@@ -139,21 +147,49 @@ export class AuthService {
 
 	/**
 	 * Authenticate a user.
+	 * Start a timeout to automatically refresh the user when their token expires.
 	 * @param user User to authenticate.
 	 */
 	private authenticateUser(user: User): void {
-		const expiresIn = user.expiryDate.getTime() - new Date().getTime();
-		this.startTokenExpiryTimer(expiresIn);
-
+		this.tokenExpiryTimer = setTimeout(
+			() => this.refreshToken(),
+			user.expiryDate.getTime() - new Date().getTime()
+		);
 		this.user.next(user);
 		localStorage.setItem(Constants.USER_DATA_KEY, JSON.stringify(user));
 	}
 
-	/**
-	 * Start a timeout to automatically sign the user out when their token expires.
-	 * @param expiresIn Time in milliseconds before signing out.
-	 */
-	private startTokenExpiryTimer(expiresIn: number): void {
-		this.tokenExpiryTimer = setTimeout(() => this.signOut(), expiresIn);
+	private refreshToken(): void {
+		const user: User = this.user.getValue();
+
+		if (!user.refreshToken) {
+			this.signOut();
+			return;
+		}
+
+		this.http
+			.post<{
+				expires_in: string;
+				refresh_token: string;
+				id_token: string;
+			}>(REFRESH_ENDPOINT, {
+				grant_type: 'refresh_token',
+				refresh_token: user.refreshToken,
+			})
+			.pipe(
+				map(
+					(res): UserResponse => {
+						return {
+							idToken: res.id_token,
+							email: user.email,
+							refreshToken: res.refresh_token,
+							expiresIn: res.expires_in,
+							localId: user.id,
+						};
+					}
+				),
+				map(this.handleSuccess.bind(this)),
+				catchError(this.handleError.bind(this))
+			).subscribe();
 	}
 }
