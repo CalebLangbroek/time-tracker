@@ -55,9 +55,7 @@ export class AuthService {
 			userJson.refreshToken
 		);
 
-		if (user.getToken()) {
-			this.authenticateUser(user);
-		}
+		this.refreshToken(user);
 	}
 
 	/**
@@ -128,7 +126,7 @@ export class AuthService {
 	 */
 	private handleSuccess(res: UserResponse): string {
 		const expiresIn = new Date(
-			new Date().getTime() + +res.expiresIn * 1000
+			new Date().getTime() + Number.parseFloat(res.expiresIn) * 1000
 		);
 
 		const user = new User(
@@ -152,16 +150,14 @@ export class AuthService {
 	 */
 	private authenticateUser(user: User): void {
 		this.tokenExpiryTimer = setTimeout(
-			() => this.refreshToken(),
+			() => this.refreshToken(user),
 			user.expiryDate.getTime() - new Date().getTime()
 		);
 		this.user.next(user);
 		localStorage.setItem(Constants.USER_DATA_KEY, JSON.stringify(user));
 	}
 
-	private refreshToken(): void {
-		const user: User = this.user.getValue();
-
+	private refreshToken(user: User): void {
 		if (!user.refreshToken) {
 			this.signOut();
 			return;
