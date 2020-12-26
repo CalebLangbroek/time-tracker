@@ -19,7 +19,7 @@ const REFRESH_ENDPOINT = `https://securetoken.googleapis.com/v1/token?key=${envi
 })
 export class AuthService {
 	user = new BehaviorSubject<User>(null);
-	private tokenExpiryTimer: any;
+	private tokenExpiryTimer: NodeJS.Timer;
 
 	constructor(private http: HttpClient, private router: Router) {}
 
@@ -78,7 +78,9 @@ export class AuthService {
 	signOut(): void {
 		this.user.next(null);
 		localStorage.removeItem(Constants.USER_DATA_KEY);
-		clearTimeout(this.tokenExpiryTimer);
+		if(this.tokenExpiryTimer) {
+			clearTimeout(this.tokenExpiryTimer);
+		}
 		this.router.navigate(['/signin']);
 	}
 
@@ -185,7 +187,10 @@ export class AuthService {
 					}
 				),
 				map(this.handleSuccess.bind(this)),
-				catchError(this.handleError.bind(this))
+				catchError((err) => {
+					this.signOut();
+					return this.handleError(err);
+				})
 			).subscribe();
 	}
 }
